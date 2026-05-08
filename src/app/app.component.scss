@@ -1,0 +1,61 @@
+:host {
+  display: block;
+}
+
+@keyframes panelReveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+section,
+aside,
+article {
+  animation: panelReveal 260ms ease-out;
+}
+
+.code-line {
+  min-height: 1.4rem;
+}
+
+code {
+  color: #d2dfef;
+  white-space: pre;
+}
+
+.token-keyword {
+  color: #8f82ff;
+}
+
+.token-type {
+  color: #5fd7ff;
+}
+
+.token-function {
+  color: #61e3a9;
+}
+
+.token-property {
+  color: #c5de84;
+}
+
+.token-string {
+  color: #f0ca76;
+}
+
+.token-punc {
+  color: #9db0c7;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  section,
+  aside,
+  article {
+    animation: none;
+  }
+}

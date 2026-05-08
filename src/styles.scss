@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --bg-main: #040a14;
+  --bg-surface: #0a1728;
+  --bg-soft: #0f2036;
+  --border-soft: #1c3149;
+  --border-active: #1d9369;
+  --text-main: #e5edf6;
+  --text-muted: #91a5bf;
+  --accent-emerald: #21d28a;
+  --accent-cyan: #47bfd9;
+  --warning: #e7b85a;
+  --danger: #f46f6f;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(71, 191, 217, 0.45) rgba(10, 23, 40, 0.6);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(71, 191, 217, 0.55), rgba(33, 210, 138, 0.5));
+  border: 2px solid rgba(10, 23, 40, 0.8);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(10, 23, 40, 0.7);
+}
+
+*:focus-visible {
+  outline: 2px solid rgba(71, 191, 217, 0.8);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
