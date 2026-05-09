@@ -5,6 +5,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   publicDir: false,
+  define: {
+    'process.env.NODE_ENV': JSON.stringify('production')
+  },
   plugins: [react()],
   build: {
     outDir: resolve(import.meta.dirname, '../../public/engines'),
