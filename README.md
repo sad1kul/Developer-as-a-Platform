@@ -1,16 +1,35 @@
-# DeveloperAsAPlatform
+# Developer-as-a-Platform
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.15.
+
+## Cross-framework workbench engines
+
+Angular remains the primary app shell. The React and Svelte workbench engines are isolated custom elements that are built into static browser scripts:
+
+- `public/engines/react-workbench.js`
+- `public/engines/svelte-workbench.js`
+
+Build only the external engines:
+
+```bash
+npm run build:engines
+```
+
+Build the full portfolio, including the React and Svelte engine scripts:
+
+```bash
+npm run build
+```
 
 ## Development server
 
 To start a local development server, run:
 
 ```bash
-ng serve
+npm run start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+`npm run start` builds the React/Svelte engine scripts first, then starts Angular. Once the server is running, open your browser and navigate to `http://localhost:4200/`.
 
 ## Code scaffolding
 
@@ -31,7 +50,7 @@ ng generate --help
 To build the project run:
 
 ```bash
-ng build
+npm run build
 ```
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.

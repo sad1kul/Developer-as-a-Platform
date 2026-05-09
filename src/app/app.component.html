@@ -111,7 +111,7 @@
               All systems operational
             </p>
             <p class="mt-3 text-xs text-text-muted">Last deployed</p>
-            <p class="text-sm text-text-main">May 07, 2026 11:20 AM</p>
+            <p class="text-sm text-text-main">Not deployed yet</p>
             <p class="mt-3 text-xs text-text-muted">Version</p>
             <p class="text-sm text-text-main">v1.0.0</p>
           </section>
@@ -273,6 +273,9 @@
             <div>
               <h2 class="text-2xl font-semibold tracking-tight">Cross-Framework Workbench</h2>
               <p class="mt-1 text-sm text-text-muted">Same component. Three frameworks. Different approaches.</p>
+              <p class="mt-2 inline-flex rounded-md border border-cyan/30 bg-cyan/10 px-2 py-1 text-xs font-medium text-cyan">
+                Local demo data only
+              </p>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 text-sm">
@@ -301,7 +304,7 @@
               <article class="rounded-xl border border-border-soft bg-bg-soft/70 p-3.5">
                 <p class="text-xs uppercase tracking-[0.1em] text-text-muted">{{ metric.label }}</p>
                 <p class="mt-2 text-2xl font-semibold">{{ metric.value }}</p>
-                <p class="mt-1 text-xs font-medium" [ngClass]="metricDeltaClass(metric.tone)">{{ metric.delta }}</p>
+                <p class="mt-1 text-xs font-medium" [ngClass]="metricCaptionClass(metric.tone)">{{ metric.caption }}</p>
               </article>
             }
           </div>
@@ -354,29 +357,79 @@
               <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path d="M20 12a8 8 0 1 1-2.343-5.657M20 4v5h-5"></path>
               </svg>
-              Refresh
+              Simulate update
               <span class="text-xs text-text-muted">{{ lastRefreshed() }}</span>
             </button>
           </div>
 
           @if (activeFramework() === 'Angular') {
             <div class="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1fr)_280px]">
-              <div class="overflow-hidden rounded-xl border border-border-soft bg-bg-soft/60">
-                <div class="overflow-x-auto">
-                  <table class="min-w-[760px] text-left text-sm">
+              <div class="space-y-3 md:hidden">
+                @if (filteredItems().length === 0) {
+                  <div class="rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted">
+                    No modules match the current filters.
+                  </div>
+                }
+                @for (item of filteredItems(); track item.id) {
+                  <button
+                    type="button"
+                    class="w-full rounded-xl border p-4 text-left transition"
+                    [ngClass]="
+                      item.id === selectedItem().id
+                        ? 'border-border-active bg-emerald/12 shadow-[inset_2px_0_0_0_rgba(33,210,138,0.85)]'
+                        : 'border-border-soft bg-bg-soft/60 hover:border-cyan/40'
+                    "
+                    (click)="selectItem(item.id)"
+                  >
+                    <span class="flex items-start justify-between gap-3">
+                      <span>
+                        <span class="block font-medium text-text-main">{{ item.name }}</span>
+                        <span class="mt-1 block font-mono text-xs text-text-muted">#{{ item.id }}</span>
+                      </span>
+                      <span
+                        class="inline-flex shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium"
+                        [ngClass]="statusClasses(item.status)"
+                      >
+                        {{ item.status }}
+                      </span>
+                    </span>
+
+                    <span class="mt-3 grid gap-2 text-xs text-text-muted">
+                      <span>Priority: {{ item.priority }}</span>
+                      <span>Updated: {{ item.updatedAt }}</span>
+                    </span>
+
+                    <span class="mt-3 block text-sm leading-relaxed text-text-muted">{{ item.description }}</span>
+
+                    <span class="mt-3 flex flex-wrap gap-2">
+                      @for (tag of item.techTags; track tag) {
+                        <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                          {{ tag }}
+                        </span>
+                      }
+                    </span>
+                  </button>
+                }
+              </div>
+
+              <div class="hidden overflow-hidden rounded-xl border border-border-soft bg-bg-soft/60 md:block">
+                <div>
+                  <table class="w-full table-fixed text-left text-sm">
                     <thead class="border-b border-border-soft/80 bg-bg-main/50 text-xs uppercase tracking-[0.08em] text-text-muted">
                       <tr>
-                        <th class="px-4 py-3 font-medium">ID</th>
-                        <th class="px-4 py-3 font-medium">Name</th>
-                        <th class="px-4 py-3 font-medium">Status</th>
-                        <th class="px-4 py-3 font-medium">Priority</th>
-                        <th class="px-4 py-3 font-medium">Updated</th>
+                        <th class="w-[74px] px-3 py-3 font-medium">ID</th>
+                        <th class="w-[18%] px-3 py-3 font-medium">Name</th>
+                        <th class="w-[96px] px-3 py-3 font-medium">Status</th>
+                        <th class="w-[90px] px-3 py-3 font-medium">Priority</th>
+                        <th class="w-[86px] px-3 py-3 font-medium">Updated</th>
+                        <th class="px-3 py-3 font-medium">Description</th>
+                        <th class="w-[22%] px-3 py-3 font-medium">Tech tags</th>
                       </tr>
                     </thead>
                     <tbody>
                       @if (filteredItems().length === 0) {
                         <tr>
-                          <td colspan="5" class="px-4 py-8 text-center text-text-muted">
+                          <td colspan="7" class="px-4 py-8 text-center text-text-muted">
                             No modules match the current filters.
                           </td>
                         </tr>
@@ -391,9 +444,18 @@
                           "
                           (click)="selectItem(item.id)"
                         >
-                          <td class="px-4 py-3 font-mono text-xs text-text-muted">#{{ item.id }}</td>
-                          <td class="px-4 py-3 font-medium">{{ item.name }}</td>
-                          <td class="px-4 py-3">
+                          <td class="px-3 py-3 font-mono text-xs text-text-muted">#{{ item.id }}</td>
+                          <td class="px-3 py-3">
+                            <button
+                              type="button"
+                              class="text-left font-medium text-text-main transition hover:text-cyan"
+                              [attr.aria-label]="'Select module ' + item.name"
+                              (click)="selectItem(item.id); $event.stopPropagation()"
+                            >
+                              {{ item.name }}
+                            </button>
+                          </td>
+                          <td class="px-3 py-3">
                             <span
                               class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium"
                               [ngClass]="statusClasses(item.status)"
@@ -401,7 +463,7 @@
                               {{ item.status }}
                             </span>
                           </td>
-                          <td class="px-4 py-3">
+                          <td class="px-3 py-3">
                             <span
                               class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium"
                               [ngClass]="priorityClasses(item.priority)"
@@ -409,7 +471,17 @@
                               {{ item.priority }}
                             </span>
                           </td>
-                          <td class="px-4 py-3 text-text-muted">{{ item.updatedAt }}</td>
+                          <td class="px-3 py-3 text-text-muted">{{ item.updatedAt }}</td>
+                          <td class="px-3 py-3 text-text-muted">{{ item.description }}</td>
+                          <td class="px-3 py-3">
+                            <div class="flex flex-wrap gap-1.5">
+                              @for (tag of item.techTags; track tag) {
+                                <span class="rounded-md border border-border-soft bg-bg-main/70 px-1.5 py-0.5 text-[11px] text-text-main">
+                                  {{ tag }}
+                                </span>
+                              }
+                            </div>
+                          </td>
                         </tr>
                       }
                     </tbody>
@@ -447,22 +519,31 @@
               }
             </div>
           } @else {
-            <div class="mt-4 rounded-xl border border-cyan/25 bg-cyan/8 p-5">
-              <p class="inline-flex items-center gap-2 text-sm font-medium text-cyan">
-                <span class="h-2 w-2 rounded-full bg-cyan"></span>
-                {{ activeFramework() }} engine is not implemented yet.
-              </p>
-              <p class="mt-2 max-w-3xl text-sm leading-relaxed text-text-muted">
-                {{ activeEngineNote() }} Angular remains the primary engine in this first MVP, while React and Svelte
-                are reserved for upcoming side-by-side architecture comparisons.
-              </p>
-              <button
-                type="button"
-                class="mt-4 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-emerald/50 hover:text-emerald"
-                (click)="setFramework('Angular')"
-              >
-                Switch back to Angular
-              </button>
+            <div class="mt-4">
+              @if (engineLoadState() === 'loading') {
+                <div class="rounded-xl border border-cyan/25 bg-cyan/8 p-5">
+                  <p class="inline-flex items-center gap-2 text-sm font-medium text-cyan">
+                    <span class="h-2 w-2 rounded-full bg-cyan"></span>
+                    Loading {{ activeFramework() }} engine...
+                  </p>
+                </div>
+              }
+
+              @if (engineLoadState() === 'error') {
+                <div class="rounded-xl border border-danger/35 bg-danger/10 p-5">
+                  <p class="text-sm font-medium text-danger">{{ activeFramework() }} engine failed to load.</p>
+                  <p class="mt-2 text-sm leading-relaxed text-text-muted">{{ engineError() }}</p>
+                  <button
+                    type="button"
+                    class="mt-4 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-emerald/50 hover:text-emerald"
+                    (click)="setFramework(activeFramework())"
+                  >
+                    Retry engine
+                  </button>
+                </div>
+              }
+
+              <div #externalEngineHost [class.hidden]="engineLoadState() === 'error'"></div>
             </div>
           }
         </section>
@@ -521,8 +602,8 @@
               <p class="mt-2 text-sm text-text-muted">Typed data, filters, sorting and selected module detail workflow.</p>
             </article>
             <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-4">
-              <h3 class="text-sm font-semibold text-purple">Future Engine Layer</h3>
-              <p class="mt-2 text-sm text-text-muted">React and Svelte implementations will be integrated in later phases.</p>
+              <h3 class="text-sm font-semibold text-purple">Engine Layer</h3>
+              <p class="mt-2 text-sm text-text-muted">React and Svelte run as lazy-loaded custom elements inside the workbench.</p>
             </article>
           </div>
         </section>
@@ -609,10 +690,14 @@
       </main>
 
       <aside class="rounded-2xl border border-border-soft/90 bg-bg-surface/90 p-4 shadow-soft backdrop-blur lg:col-span-2 xl:col-span-1 xl:sticky xl:top-4 xl:h-[calc(100vh-2rem)] xl:overflow-y-auto">
-        <div class="flex items-center gap-2 overflow-x-auto pb-2">
+        <div class="flex items-center gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Technical context tabs">
           @for (tab of contextTabs; track tab) {
             <button
               type="button"
+              role="tab"
+              [id]="contextTabId(tab)"
+              [attr.aria-selected]="tab === activeContextTab()"
+              [attr.aria-controls]="contextPanelId(tab)"
               class="whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-medium transition"
               [ngClass]="
                 tab === activeContextTab()
@@ -627,11 +712,16 @@
         </div>
 
         @if (activeContextTab() === 'Source Code') {
-          <section class="mt-3 space-y-3">
+          <section
+            class="mt-3 space-y-3"
+            role="tabpanel"
+            [id]="contextPanelId('Source Code')"
+            [attr.aria-labelledby]="contextTabId('Source Code')"
+          >
             <div class="rounded-xl border border-border-soft bg-bg-soft/65 p-3">
-              <p class="text-sm font-medium text-cyan">Angular (TypeScript)</p>
+              <p class="text-sm font-medium text-cyan">{{ activeSourceSample().label }}</p>
               <div class="mt-2 flex items-center justify-between rounded-md border border-border-soft bg-bg-main/70 px-3 py-2">
-                <span class="font-mono text-xs text-text-muted">auth.service.ts</span>
+                <span class="font-mono text-xs text-text-muted">{{ activeSourceSample().filename }}</span>
                 <button
                   type="button"
                   class="inline-flex items-center gap-1 text-xs text-text-muted transition hover:text-cyan"
@@ -645,7 +735,7 @@
                 </button>
               </div>
               <div class="mt-3 overflow-x-auto rounded-md border border-border-soft bg-[#07111f] p-3 font-mono text-xs leading-relaxed">
-                @for (line of codeLines; track $index) {
+                @for (line of activeSourceSample().lines; track $index) {
                   <div class="code-line flex gap-3">
                     <span class="w-6 shrink-0 text-right text-[#5f7391]">{{ $index + 1 }}</span>
                     <code [innerHTML]="line"></code>
@@ -657,8 +747,13 @@
         }
 
         @if (activeContextTab() === 'State') {
-          <section class="mt-3 space-y-3">
-            @for (note of stateNotes; track note.heading) {
+          <section
+            class="mt-3 space-y-3"
+            role="tabpanel"
+            [id]="contextPanelId('State')"
+            [attr.aria-labelledby]="contextTabId('State')"
+          >
+            @for (note of activeStateNotes(); track note.heading) {
               <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
                 <h3 class="text-sm font-semibold text-cyan">{{ note.heading }}</h3>
                 <ul class="mt-2 space-y-2 text-sm text-text-muted">
@@ -675,8 +770,13 @@
         }
 
         @if (activeContextTab() === 'Architecture') {
-          <section class="mt-3 space-y-3">
-            @for (note of architectureNotes; track note.heading) {
+          <section
+            class="mt-3 space-y-3"
+            role="tabpanel"
+            [id]="contextPanelId('Architecture')"
+            [attr.aria-labelledby]="contextTabId('Architecture')"
+          >
+            @for (note of activeArchitectureNotes(); track note.heading) {
               <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
                 <h3 class="text-sm font-semibold text-emerald">{{ note.heading }}</h3>
                 <ul class="mt-2 space-y-2 text-sm text-text-muted">
@@ -693,11 +793,16 @@
         }
 
         @if (activeContextTab() === 'Trade-offs') {
-          <section class="mt-3 space-y-3">
+          <section
+            class="mt-3 space-y-3"
+            role="tabpanel"
+            [id]="contextPanelId('Trade-offs')"
+            [attr.aria-labelledby]="contextTabId('Trade-offs')"
+          >
             <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
-              <h3 class="text-sm font-semibold text-emerald">Why Angular?</h3>
+              <h3 class="text-sm font-semibold text-emerald">Why {{ activeFramework() }}?</h3>
               <ul class="mt-2 space-y-2 text-sm text-text-muted">
-                @for (strength of angularStrengths; track strength) {
+                @for (strength of activeStrengths(); track strength) {
                   <li class="flex gap-2">
                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald"></span>
                     <span>{{ strength }}</span>
@@ -709,7 +814,7 @@
             <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
               <h3 class="text-sm font-semibold text-danger">Trade-offs</h3>
               <ul class="mt-2 space-y-2 text-sm text-text-muted">
-                @for (tradeoff of angularTradeoffs; track tradeoff) {
+                @for (tradeoff of activeTradeoffs(); track tradeoff) {
                   <li class="flex gap-2">
                     <span class="mt-1 h-1.5 w-1.5 rounded-full bg-danger"></span>
                     <span>{{ tradeoff }}</span>
@@ -721,7 +826,7 @@
             <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
               <h3 class="text-sm font-semibold text-cyan">Compared Frameworks</h3>
               <div class="mt-3 space-y-2">
-                @for (note of comparedFrameworkNotes; track note.framework) {
+                @for (note of activeComparedFrameworkNotes(); track note.framework) {
                   <div class="rounded-lg border border-border-soft bg-bg-main/65 px-3 py-2">
                     <p class="text-sm font-medium text-text-main">{{ note.framework }}</p>
                     <p class="mt-1 text-xs text-text-muted">{{ note.note }}</p>

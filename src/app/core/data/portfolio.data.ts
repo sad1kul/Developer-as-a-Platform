@@ -1,6 +1,7 @@
 import {
   ContextNote,
   ContextTab,
+  EngineContext,
   FrameworkEngine,
   NavItem,
   PrincipleCard,
@@ -22,8 +23,8 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const FRAMEWORK_ENGINES: Array<{ name: FrameworkEngine; available: boolean; note: string }> = [
   { name: 'Angular', available: true, note: 'Primary engine implemented.' },
-  { name: 'React', available: false, note: 'Coming soon: hooks-based implementation.' },
-  { name: 'Svelte', available: false, note: 'Coming soon: compiler-driven reactivity implementation.' }
+  { name: 'React', available: true, note: 'React custom element engine active.' },
+  { name: 'Svelte', available: true, note: 'Svelte custom element engine active.' }
 ];
 
 export const WORKBENCH_ITEMS: WorkbenchItem[] = [
@@ -233,8 +234,8 @@ export const STATE_NOTES: ContextNote[] = [
   {
     heading: 'Engine Mode',
     points: [
-      'Angular is active in this MVP implementation.',
-      'React and Svelte modes are visible and intentionally marked as coming soon.'
+      'Angular renders natively inside the shell when selected.',
+      'React and Svelte mount as isolated custom elements when selected.'
     ]
   }
 ];
@@ -257,7 +258,7 @@ export const ARCHITECTURE_NOTES: ContextNote[] = [
   {
     heading: 'Future Engines',
     points: [
-      'React and Svelte can be integrated later as isolated workbench engines.',
+      'React and Svelte are integrated as lazy-loaded custom element workbench engines.',
       'Right context panel documents decisions, trade-offs and implementation notes.'
     ]
   }
@@ -277,6 +278,235 @@ export const ANGULAR_TRADEOFFS: string[] = [
 ];
 
 export const COMPARED_FRAMEWORK_NOTES: Array<{ framework: 'React' | 'Svelte'; note: string }> = [
-  { framework: 'React', note: 'Coming soon: hooks-based implementation.' },
-  { framework: 'Svelte', note: 'Coming soon: compiler-driven reactivity implementation.' }
+  { framework: 'React', note: 'Implemented as a lazy-loaded custom element using React state and memoized views.' },
+  { framework: 'Svelte', note: 'Implemented as a lazy-loaded custom element using native Svelte reactivity.' }
 ];
+
+const angularSourceLines = [
+  '<span class="token-keyword">readonly</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">computed</span><span class="token-punc">(() =&gt; {</span>',
+  '  <span class="token-keyword">const</span> <span class="token-property">term</span> <span class="token-punc">=</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">searchQuery</span><span class="token-punc">().</span><span class="token-function">trim</span><span class="token-punc">().</span><span class="token-function">toLowerCase</span><span class="token-punc">();</span>',
+  '  <span class="token-keyword">return</span> <span class="token-function">sortItems</span><span class="token-punc">(</span><span class="token-function">filterItems</span><span class="token-punc">(</span><span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">items</span><span class="token-punc">(),</span> <span class="token-property">term</span><span class="token-punc">));</span>',
+  '<span class="token-punc">});</span>',
+  '',
+  '<span class="token-keyword">readonly</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span> <span class="token-function">computed</span><span class="token-punc">(() =&gt;</span>',
+  '  <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">filteredItems</span><span class="token-punc">().</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">selectedItemId</span><span class="token-punc">())</span>',
+  '  <span class="token-punc">??</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">filteredItems</span><span class="token-punc">()[</span><span class="token-number">0</span><span class="token-punc">]</span>',
+  '<span class="token-punc">);</span>'
+];
+
+const reactSourceLines = [
+  '<span class="token-keyword">const</span> <span class="token-punc">[</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">setItems</span><span class="token-punc">]</span> <span class="token-punc">=</span> <span class="token-function">useState</span><span class="token-punc">(</span><span class="token-property">createWorkbenchItems</span><span class="token-punc">);</span>',
+  '<span class="token-keyword">const</span> <span class="token-punc">[</span><span class="token-property">selectedItemId</span><span class="token-punc">,</span> <span class="token-property">setSelectedItemId</span><span class="token-punc">]</span> <span class="token-punc">=</span> <span class="token-function">useState</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]?.</span><span class="token-property">id</span> <span class="token-punc">??</span> <span class="token-number">0</span><span class="token-punc">);</span>',
+  '',
+  '<span class="token-keyword">const</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">useMemo</span><span class="token-punc">(() =&gt;</span>',
+  '  <span class="token-function">filterAndSortItems</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span><span class="token-punc">),</span>',
+  '  <span class="token-punc">[</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span><span class="token-punc">]</span>',
+  '<span class="token-punc">);</span>',
+  '',
+  '<span class="token-keyword">const</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span> <span class="token-function">useMemo</span><span class="token-punc">(() =&gt;</span>',
+  '  <span class="token-property">filteredItems</span><span class="token-punc">.</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-property">selectedItemId</span><span class="token-punc">)</span> <span class="token-punc">??</span> <span class="token-property">filteredItems</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">],</span>',
+  '  <span class="token-punc">[</span><span class="token-property">filteredItems</span><span class="token-punc">,</span> <span class="token-property">selectedItemId</span><span class="token-punc">]</span>',
+  '<span class="token-punc">);</span>'
+];
+
+const svelteSourceLines = [
+  '<span class="token-keyword">let</span> <span class="token-property">items</span> <span class="token-punc">=</span> <span class="token-function">createWorkbenchItems</span><span class="token-punc">();</span>',
+  '<span class="token-keyword">let</span> <span class="token-property">selectedItemId</span> <span class="token-punc">=</span> <span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]?.</span><span class="token-property">id</span> <span class="token-punc">??</span> <span class="token-number">0</span><span class="token-punc">;</span>',
+  '',
+  '<span class="token-property">$</span><span class="token-punc">:</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">filterAndSortItems</span><span class="token-punc">(</span>',
+  '  <span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span>',
+  '<span class="token-punc">);</span>',
+  '',
+  '<span class="token-property">$</span><span class="token-punc">:</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span>',
+  '  <span class="token-property">filteredItems</span><span class="token-punc">.</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-property">selectedItemId</span><span class="token-punc">)</span>',
+  '  <span class="token-punc">??</span> <span class="token-property">filteredItems</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]</span> <span class="token-punc">??</span> <span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">];</span>'
+];
+
+export const ENGINE_CONTEXTS: Record<FrameworkEngine, EngineContext> = {
+  Angular: {
+    source: {
+      label: 'Angular (Signals)',
+      filename: 'workbench.component.ts',
+      lines: angularSourceLines,
+      plain: [
+        'readonly filteredItems = computed(() => {',
+        '  const term = this.searchQuery().trim().toLowerCase();',
+        '  return sortItems(filterItems(this.items(), term));',
+        '});',
+        '',
+        'readonly selectedItem = computed(() =>',
+        '  this.filteredItems().find((item) => item.id === this.selectedItemId())',
+        '  ?? this.filteredItems()[0]',
+        ');'
+      ].join('\n')
+    },
+    stateNotes: STATE_NOTES,
+    architectureNotes: ARCHITECTURE_NOTES,
+    strengths: ANGULAR_STRENGTHS,
+    tradeoffs: ANGULAR_TRADEOFFS,
+    comparedFrameworkNotes: [
+      { framework: 'React', note: 'Available as a lazy-loaded custom element mounted only inside the workbench area.' },
+      { framework: 'Svelte', note: 'Available as a lazy-loaded custom element mounted only inside the workbench area.' }
+    ]
+  },
+  React: {
+    source: {
+      label: 'React (TSX)',
+      filename: 'ReactWorkbench.tsx',
+      lines: reactSourceLines,
+      plain: [
+        'const [items, setItems] = useState(createWorkbenchItems);',
+        'const [selectedItemId, setSelectedItemId] = useState(items[0]?.id ?? 0);',
+        '',
+        'const filteredItems = useMemo(() =>',
+        '  filterAndSortItems(items, searchQuery, statusFilter, sortBy),',
+        '  [items, searchQuery, statusFilter, sortBy]',
+        ');',
+        '',
+        'const selectedItem = useMemo(() =>',
+        '  filteredItems.find((item) => item.id === selectedItemId) ?? filteredItems[0],',
+        '  [filteredItems, selectedItemId]',
+        ');'
+      ].join('\n')
+    },
+    stateNotes: [
+      {
+        heading: 'React Local State',
+        points: [
+          'useState owns rows, query, filter, sort, selected row and simulated refresh state.',
+          'The engine lives inside <react-data-workbench> and does not replace the Angular shell.'
+        ]
+      },
+      {
+        heading: 'Memoized View',
+        points: [
+          'useMemo derives filtered rows from local state and mock data.',
+          'Selected detail falls back to the first visible row when filters hide the previous selection.'
+        ]
+      },
+      {
+        heading: 'Engine Boundary',
+        points: [
+          'React is loaded from /engines/react-workbench.js only when selected.',
+          'The custom element checks registration before defining itself to avoid duplicate registration errors.'
+        ]
+      }
+    ],
+    architectureNotes: [
+      {
+        heading: 'React Custom Element',
+        points: [
+          'React renders into a shadow-root custom element using react-dom/client createRoot.',
+          'The element unmounts the React root in disconnectedCallback.'
+        ]
+      },
+      {
+        heading: 'Angular Host',
+        points: [
+          'Angular controls framework selection and script loading.',
+          'The shell clears the engine host before mounting a different custom element.'
+        ]
+      },
+      {
+        heading: 'Shared Contract',
+        points: [
+          'The React workbench uses the same module rows, statuses, priorities and interactions as Angular.',
+          'Mock data stays local and clearly labeled as demo data.'
+        ]
+      }
+    ],
+    strengths: [
+      'Small isolated engine boundary',
+      'Familiar hooks-based state model',
+      'useMemo keeps derived row views predictable',
+      'Easy to compare with Angular signal-based state'
+    ],
+    tradeoffs: [
+      'Adds React runtime cost when this engine is selected',
+      'Custom element styling must be maintained beside the Angular UI',
+      'State is isolated from Angular unless explicit events are wired'
+    ],
+    comparedFrameworkNotes: [
+      { framework: 'Angular', note: 'Primary shell remains Angular and owns layout, navigation and context.' },
+      { framework: 'Svelte', note: 'Sibling custom element engine using compiler-driven reactivity.' }
+    ]
+  },
+  Svelte: {
+    source: {
+      label: 'Svelte',
+      filename: 'SvelteWorkbench.svelte',
+      lines: svelteSourceLines,
+      plain: [
+        'let items = createWorkbenchItems();',
+        'let selectedItemId = items[0]?.id ?? 0;',
+        '',
+        '$: filteredItems = filterAndSortItems(items, searchQuery, statusFilter, sortBy);',
+        '',
+        '$: selectedItem =',
+        '  filteredItems.find((item) => item.id === selectedItemId)',
+        '  ?? filteredItems[0] ?? items[0];'
+      ].join('\n')
+    },
+    stateNotes: [
+      {
+        heading: 'Native Reactivity',
+        points: [
+          'Svelte variables hold rows, query, filter, sort and selected row state.',
+          'Reactive statements derive filtered rows and selected detail without an external state library.'
+        ]
+      },
+      {
+        heading: 'Compiled Engine',
+        points: [
+          'The component compiles as <svelte-data-workbench> using Svelte custom element support.',
+          'The engine bundle is loaded only when Svelte is selected.'
+        ]
+      },
+      {
+        heading: 'Local Demo Data',
+        points: [
+          'The same workbench rows are used for honest cross-framework comparison.',
+          'Simulated updates stay local and are labeled as simulation.'
+        ]
+      }
+    ],
+    architectureNotes: [
+      {
+        heading: 'Svelte Custom Element',
+        points: [
+          'Svelte compiles the workbench into a browser custom element.',
+          'Styles are scoped to the engine so it remains visually consistent without leaking into the shell.'
+        ]
+      },
+      {
+        heading: 'Angular Host',
+        points: [
+          'Angular lazy-loads /engines/svelte-workbench.js on selection.',
+          'Switching engines removes the previous custom element before mounting the next one.'
+        ]
+      },
+      {
+        heading: 'Comparison Surface',
+        points: [
+          'The Svelte engine exposes the same KPIs, controls, rows and detail panel as Angular and React.',
+          'The right panel documents the framework-specific state model.'
+        ]
+      }
+    ],
+    strengths: [
+      'Minimal component state syntax',
+      'Compiler-driven reactivity keeps derived values concise',
+      'Small engine bundle compared with runtime-heavy approaches',
+      'Clear contrast with Angular signals and React hooks'
+    ],
+    tradeoffs: [
+      'Separate Svelte build pipeline must stay in sync with Angular deployment',
+      'Custom element integration limits direct Angular template binding',
+      'Team familiarity may be lower than Angular or React'
+    ],
+    comparedFrameworkNotes: [
+      { framework: 'Angular', note: 'Primary shell remains Angular and owns layout, navigation and context.' },
+      { framework: 'React', note: 'Sibling custom element engine using hooks and memoized derived state.' }
+    ]
+  }
+};

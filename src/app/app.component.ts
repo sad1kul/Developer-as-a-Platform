@@ -1,17 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import {
-  ANGULAR_STRENGTHS,
-  ANGULAR_TRADEOFFS,
-  ARCHITECTURE_NOTES,
-  COMPARED_FRAMEWORK_NOTES,
   CONTEXT_TABS,
+  ENGINE_CONTEXTS,
   FRAMEWORK_ENGINES,
   NAV_ITEMS,
   PRINCIPLE_CARDS,
   SORT_OPTIONS,
-  STATE_NOTES,
   STATUS_FILTERS,
   SYSTEMS_IN_PROGRESS,
   TECH_PROFILE_GROUPS,
@@ -29,11 +25,13 @@ import {
 
 type SortOption = (typeof SORT_OPTIONS)[number];
 type KpiTone = 'neutral' | 'positive' | 'warning' | 'danger';
+type ExternalWorkbenchEngine = Exclude<FrameworkEngine, 'Angular'>;
+type EngineLoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 interface KpiMetric {
   label: string;
   value: string;
-  delta: string;
+  caption: string;
   tone: KpiTone;
 }
 
@@ -44,7 +42,9 @@ interface KpiMetric {
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+  @ViewChild('externalEngineHost') private externalEngineHost?: ElementRef<HTMLElement>;
+
   readonly githubUrl = 'https://github.com/sad1kul';
   readonly linkedInUrl = 'https://www.linkedin.com/in/sadikul-islam-553a2669/';
   readonly cvUrl = '/assets/Sadikul-Islam-CV.pdf';
@@ -58,31 +58,7 @@ export class AppComponent {
   readonly techProfileGroups = TECH_PROFILE_GROUPS;
   readonly progressSystems = SYSTEMS_IN_PROGRESS;
   readonly contextTabs = CONTEXT_TABS;
-  readonly stateNotes = STATE_NOTES;
-  readonly architectureNotes = ARCHITECTURE_NOTES;
-  readonly angularStrengths = ANGULAR_STRENGTHS;
-  readonly angularTradeoffs = ANGULAR_TRADEOFFS;
-  readonly comparedFrameworkNotes = COMPARED_FRAMEWORK_NOTES;
-
-  readonly codeLines: string[] = [
-    '<span class="token-keyword">@Injectable</span><span class="token-punc">({</span> <span class="token-property">providedIn</span><span class="token-punc">:</span> <span class="token-string">\'root\'</span> <span class="token-punc">})</span>',
-    '<span class="token-keyword">export class</span> <span class="token-type">AuthService</span> <span class="token-punc">{</span>',
-    '  <span class="token-keyword">private</span> <span class="token-property">user</span> <span class="token-punc">=</span> <span class="token-function">signal</span><span class="token-punc">&lt;</span><span class="token-type">User</span> <span class="token-punc">|</span> <span class="token-type">null</span><span class="token-punc">&gt;(</span><span class="token-type">null</span><span class="token-punc">);</span>',
-    '  <span class="token-keyword">private</span> <span class="token-property">loading</span> <span class="token-punc">=</span> <span class="token-function">signal</span><span class="token-punc">(</span><span class="token-keyword">false</span><span class="token-punc">);</span>',
-    '',
-    '  <span class="token-function">login</span><span class="token-punc">(</span><span class="token-property">credentials</span><span class="token-punc">:</span> <span class="token-type">LoginDto</span><span class="token-punc">)</span> <span class="token-punc">{</span>',
-    '    <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-property">loading</span><span class="token-punc">.</span><span class="token-function">set</span><span class="token-punc">(</span><span class="token-keyword">true</span><span class="token-punc">);</span>',
-    '    <span class="token-keyword">return</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-property">http</span><span class="token-punc">.</span><span class="token-function">post</span><span class="token-punc">&lt;</span><span class="token-type">AuthResponse</span><span class="token-punc">&gt;(</span>',
-    '      <span class="token-string">\'/api/auth/login\'</span><span class="token-punc">,</span> <span class="token-property">credentials</span>',
-    '    <span class="token-punc">).</span><span class="token-function">pipe</span><span class="token-punc">(</span>',
-    '      <span class="token-function">tap</span><span class="token-punc">((</span><span class="token-property">res</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-punc">{</span>',
-    '        <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-property">user</span><span class="token-punc">.</span><span class="token-function">set</span><span class="token-punc">(</span><span class="token-property">res</span><span class="token-punc">.</span><span class="token-property">user</span><span class="token-punc">);</span>',
-    '        <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-property">loading</span><span class="token-punc">.</span><span class="token-function">set</span><span class="token-punc">(</span><span class="token-keyword">false</span><span class="token-punc">);</span>',
-    '      <span class="token-punc">})</span>',
-    '    <span class="token-punc">);</span>',
-    '  <span class="token-punc">}</span>',
-    '<span class="token-punc">}</span>'
-  ];
+  readonly engineContexts = ENGINE_CONTEXTS;
 
   readonly items = signal<WorkbenchItem[]>(WORKBENCH_ITEMS.map((item) => ({ ...item })));
   readonly mobileMenuOpen = signal(false);
@@ -94,7 +70,16 @@ export class AppComponent {
   readonly selectedItemId = signal<number>(WORKBENCH_ITEMS[0]?.id ?? 0);
   readonly activeContextTab = signal<ContextTab>('Source Code');
   readonly copyState = signal<'ready' | 'copied'>('ready');
-  readonly lastRefreshed = signal('Just now');
+  readonly lastRefreshed = signal('Not simulated yet');
+  readonly engineLoadState = signal<EngineLoadState>('idle');
+  readonly engineError = signal('');
+
+  private readonly engineScriptConfig = {
+    React: { src: '/engines/react-workbench.js', tagName: 'react-data-workbench' },
+    Svelte: { src: '/engines/svelte-workbench.js', tagName: 'svelte-data-workbench' }
+  } satisfies Record<ExternalWorkbenchEngine, { src: string; tagName: string }>;
+
+  private readonly engineScriptPromises = new Map<ExternalWorkbenchEngine, Promise<void>>();
 
   readonly kpiMetrics = computed<KpiMetric[]>(() => {
     const currentItems = this.items();
@@ -107,10 +92,10 @@ export class AppComponent {
     ).length;
 
     return [
-      { label: 'Total Items', value: currentItems.length.toLocaleString(), delta: '+12.5%', tone: 'neutral' },
-      { label: 'Active', value: active.toLocaleString(), delta: '+8.1%', tone: 'positive' },
-      { label: 'Pending', value: pending.toLocaleString(), delta: '+3.4%', tone: 'warning' },
-      { label: 'Errors', value: errors.toLocaleString(), delta: '-2.1%', tone: 'danger' }
+      { label: 'Demo Modules', value: currentItems.length.toLocaleString(), caption: 'Local mock rows', tone: 'neutral' },
+      { label: 'Active Rows', value: active.toLocaleString(), caption: 'Derived from mock data', tone: 'positive' },
+      { label: 'Waiting Rows', value: pending.toLocaleString(), caption: 'Pending or in review', tone: 'warning' },
+      { label: 'Needs Attention', value: errors.toLocaleString(), caption: 'Warning or error rows', tone: 'danger' }
     ];
   });
 
@@ -153,10 +138,21 @@ export class AppComponent {
     return rows.find((item) => item.id === this.selectedItemId()) ?? rows[0] ?? this.items()[0];
   });
 
-  readonly activeEngineNote = computed(() => {
+  readonly activeEngineContext = computed(() => this.engineContexts[this.activeFramework()]);
+  readonly activeSourceSample = computed(() => this.activeEngineContext().source);
+  readonly activeStateNotes = computed(() => this.activeEngineContext().stateNotes);
+  readonly activeArchitectureNotes = computed(() => this.activeEngineContext().architectureNotes);
+  readonly activeStrengths = computed(() => this.activeEngineContext().strengths);
+  readonly activeTradeoffs = computed(() => this.activeEngineContext().tradeoffs);
+  readonly activeComparedFrameworkNotes = computed(() => this.activeEngineContext().comparedFrameworkNotes);
+
+  ngAfterViewInit(): void {
     const currentEngine = this.activeFramework();
-    return this.engines.find((engine) => engine.name === currentEngine)?.note ?? '';
-  });
+
+    if (currentEngine !== 'Angular') {
+      this.mountExternalEngineSoon(currentEngine);
+    }
+  }
 
   setActiveSection(section: NavSectionId): void {
     this.activeSection.set(section);
@@ -169,6 +165,17 @@ export class AppComponent {
 
   setFramework(engine: FrameworkEngine): void {
     this.activeFramework.set(engine);
+    this.activeContextTab.set('Source Code');
+    this.copyState.set('ready');
+
+    if (engine === 'Angular') {
+      this.engineLoadState.set('idle');
+      this.engineError.set('');
+      this.clearExternalEngineHost();
+      return;
+    }
+
+    this.mountExternalEngineSoon(engine);
   }
 
   setSearchQuery(value: string): void {
@@ -192,6 +199,14 @@ export class AppComponent {
 
   setContextTab(tab: ContextTab): void {
     this.activeContextTab.set(tab);
+  }
+
+  contextTabId(tab: ContextTab): string {
+    return `context-tab-${this.contextSlug(tab)}`;
+  }
+
+  contextPanelId(tab: ContextTab): string {
+    return `context-panel-${this.contextSlug(tab)}`;
   }
 
   scrollToSection(section: NavSectionId): void {
@@ -224,12 +239,12 @@ export class AppComponent {
     });
 
     this.items.set(refreshed);
-    this.lastRefreshed.set(
-      new Intl.DateTimeFormat('en-US', {
-        hour: 'numeric',
-        minute: '2-digit'
-      }).format(new Date())
-    );
+    const simulatedAt = new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(new Date());
+
+    this.lastRefreshed.set(`Simulated ${simulatedAt}`);
     this.ensureVisibleSelection();
   }
 
@@ -286,7 +301,7 @@ export class AppComponent {
     return classMap[priority];
   }
 
-  metricDeltaClass(tone: KpiTone): string {
+  metricCaptionClass(tone: KpiTone): string {
     const classMap = {
       neutral: 'text-cyan',
       positive: 'text-emerald',
@@ -355,23 +370,106 @@ export class AppComponent {
     return status;
   }
 
+  private mountExternalEngineSoon(engine: ExternalWorkbenchEngine): void {
+    this.engineLoadState.set('loading');
+    this.engineError.set('');
+
+    setTimeout(() => void this.mountExternalEngine(engine));
+  }
+
+  private async mountExternalEngine(engine: ExternalWorkbenchEngine): Promise<void> {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const host = this.externalEngineHost?.nativeElement;
+
+    if (!host) {
+      this.mountExternalEngineSoon(engine);
+      return;
+    }
+
+    this.clearExternalEngineHost();
+
+    try {
+      await this.ensureEngineScript(engine);
+
+      if (this.activeFramework() !== engine) {
+        return;
+      }
+
+      const config = this.engineScriptConfig[engine];
+
+      if (!customElements.get(config.tagName)) {
+        throw new Error(`${engine} workbench custom element was not registered.`);
+      }
+
+      const element = document.createElement(config.tagName);
+      element.setAttribute('data-active-engine', engine.toLowerCase());
+      host.appendChild(element);
+      this.engineLoadState.set('ready');
+    } catch (error) {
+      if (this.activeFramework() !== engine) {
+        return;
+      }
+
+      const message = error instanceof Error ? error.message : `${engine} engine failed to load.`;
+      this.engineError.set(message);
+      this.engineLoadState.set('error');
+    }
+  }
+
+  private ensureEngineScript(engine: ExternalWorkbenchEngine): Promise<void> {
+    const config = this.engineScriptConfig[engine];
+
+    if (customElements.get(config.tagName)) {
+      return Promise.resolve();
+    }
+
+    const existingPromise = this.engineScriptPromises.get(engine);
+
+    if (existingPromise) {
+      return existingPromise;
+    }
+
+    const promise = new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = config.src;
+      script.async = true;
+      script.dataset['workbenchEngine'] = engine;
+
+      script.onload = () => {
+        if (customElements.get(config.tagName)) {
+          resolve();
+          return;
+        }
+
+        reject(new Error(`${engine} engine script loaded but ${config.tagName} was not registered.`));
+      };
+
+      script.onerror = () => reject(new Error(`${engine} engine script could not be loaded from ${config.src}.`));
+
+      document.head.appendChild(script);
+    });
+    const retryablePromise = promise.catch((error) => {
+      this.engineScriptPromises.delete(engine);
+      throw error;
+    });
+
+    this.engineScriptPromises.set(engine, retryablePromise);
+
+    return retryablePromise;
+  }
+
+  private clearExternalEngineHost(): void {
+    this.externalEngineHost?.nativeElement.replaceChildren();
+  }
+
+  private contextSlug(tab: ContextTab): string {
+    return tab.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
   private plainCodeSample(): string {
-    return [
-      "@Injectable({ providedIn: 'root' })",
-      'export class AuthService {',
-      '  private user = signal<User | null>(null);',
-      '  private loading = signal(false);',
-      '',
-      '  login(credentials: LoginDto) {',
-      '    this.loading.set(true);',
-      '    return this.http.post<AuthResponse>(\'/api/auth/login\', credentials).pipe(',
-      '      tap((res) => {',
-      '        this.user.set(res.user);',
-      '        this.loading.set(false);',
-      '      })',
-      '    );',
-      '  }',
-      '}'
-    ].join('\n');
+    return this.activeSourceSample().plain;
   }
 }

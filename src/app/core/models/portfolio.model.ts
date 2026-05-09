@@ -65,3 +65,24 @@ export interface ContextNote {
   heading: string;
   points: string[];
 }
+
+export interface CodeSample {
+  label: string;
+  filename: string;
+  lines: string[];
+  plain: string;
+}
+
+export interface EngineComparisonNote {
+  framework: FrameworkEngine;
+  note: string;
+}
+
+export interface EngineContext {
+  source: CodeSample;
+  stateNotes: ContextNote[];
+  architectureNotes: ContextNote[];
+  strengths: string[];
+  tradeoffs: string[];
+  comparedFrameworkNotes: EngineComparisonNote[];
+}
