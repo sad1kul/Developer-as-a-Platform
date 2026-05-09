@@ -237,15 +237,19 @@ select:focus-visible {
   color: #e5edf6;
   padding: 0.25rem 0.45rem;
   font-size: 0.75rem;
+  white-space: nowrap;
 }
 
 .table-shell {
   display: none;
-  overflow: hidden;
+  min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
+  min-width: 1120px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -260,16 +264,31 @@ th {
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+  line-height: 1.35;
   padding: 0.75rem;
   text-align: left;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 td {
   border-bottom: 1px solid rgba(28, 49, 73, 0.5);
   color: #91a5bf;
+  line-height: 1.5;
+  overflow-wrap: break-word;
   padding: 0.75rem;
   vertical-align: top;
+}
+
+td:nth-child(1),
+td:nth-child(3),
+td:nth-child(4),
+td:nth-child(5) {
+  white-space: nowrap;
+}
+
+td .tag-list {
+  margin-top: 0;
 }
 
 .empty-state-cell {
@@ -290,6 +309,8 @@ td {
   border: 0;
   background: transparent;
   color: #e5edf6;
+  max-width: 100%;
+  overflow-wrap: break-word;
   padding: 0;
   text-align: left;
   transition: color 160ms ease;
@@ -349,6 +370,7 @@ td {
 }
 
 .detail-card {
+  min-width: 0;
   padding: 1rem;
 }
 
@@ -363,6 +385,7 @@ td {
   margin: 0;
   color: #e5edf6;
   font-size: 1.125rem;
+  overflow-wrap: break-word;
 }
 
 .empty-state {
@@ -408,10 +431,6 @@ td {
 @media (min-width: 1280px) {
   .kpi-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .engine-grid {
-    grid-template-columns: minmax(0, 1fr) 280px;
   }
 }
 

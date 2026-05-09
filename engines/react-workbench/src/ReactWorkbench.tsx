@@ -254,12 +254,12 @@ export function ReactWorkbench() {
               <thead>
                 <tr>
                   <th style={{ width: '74px' }}>ID</th>
-                  <th style={{ width: '18%' }}>Name</th>
-                  <th style={{ width: '96px' }}>Status</th>
-                  <th style={{ width: '90px' }}>Priority</th>
-                  <th style={{ width: '86px' }}>Updated</th>
-                  <th>Description</th>
-                  <th style={{ width: '22%' }}>Tech tags</th>
+                  <th style={{ width: '190px' }}>Name</th>
+                  <th style={{ width: '112px' }}>Status</th>
+                  <th style={{ width: '110px' }}>Priority</th>
+                  <th style={{ width: '110px' }}>Updated</th>
+                  <th style={{ width: '310px' }}>Description</th>
+                  <th style={{ width: '214px' }}>Tech tags</th>
                 </tr>
               </thead>
               <tbody>
