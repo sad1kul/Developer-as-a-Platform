@@ -1,0 +1,126 @@
+<app-section-card sectionId="overview">
+  <div class="relative">
+    <div class="grid items-start gap-8 lg:gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+      <div class="min-w-0">
+        <p class="text-lg text-portfolio-muted mb-2">Hi, I’m</p>
+        <h1 class="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 tracking-tight">{{ profile.name }}</h1>
+
+        <div class="flex flex-wrap items-center gap-2 text-sm text-portfolio-muted mb-6">
+          <span class="text-portfolio-accent font-medium">{{ profile.roleLine }}</span>
+          <span class="px-2">|</span>
+          <span>{{ profile.subtitle }}</span>
+        </div>
+
+        <p class="text-portfolio-muted text-base leading-relaxed mb-8 max-w-xl">
+          {{ profile.summary }}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            class="px-5 py-2.5 bg-portfolio-accent text-portfolio-bg font-medium rounded-md hover:bg-portfolio-accent/90 transition-colors flex items-center"
+            (click)="sectionRequested.emit('workbench')"
+          >
+            View Workbench
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="ml-2"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="px-5 py-2.5 bg-portfolio-panel border border-portfolio-border rounded-md hover:border-portfolio-text transition-colors"
+            (click)="sectionRequested.emit('tech-profile')"
+          >
+            View Tech Profile
+          </button>
+
+          @for (link of socialLinks(); track link.label) {
+            <a
+              [href]="link.url"
+              target="_blank"
+              rel="noopener"
+              class="w-10 h-10 flex items-center justify-center bg-portfolio-panel border border-portfolio-border rounded-md hover:border-portfolio-text transition-colors"
+              [attr.aria-label]="link.ariaLabel"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                class="h-[18px] w-[18px]"
+                [attr.fill]="link.icon === 'cv' ? 'none' : 'currentColor'"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path [attr.d]="quickIconPath(link.icon)"></path>
+              </svg>
+            </a>
+          }
+        </div>
+      </div>
+
+      <div
+        class="w-full h-[360px] sm:h-[380px] perspective-1000 cursor-pointer"
+        (click)="toggleFlip()"
+        title="Click to flip"
+      >
+        <div class="relative w-full h-full transform-style-3d transition-transform duration-700 ease-in-out" [class.rotate-y-180]="!isFlipped()">
+          <div class="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden border border-portfolio-border shadow-lg bg-portfolio-panel p-3 flex items-center justify-center">
+            <img src="/assets/images/profile.jpeg" alt="Sadikul Islam" class="w-full h-full object-contain rounded-lg" />
+          </div>
+
+          <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-portfolio-panel border border-portfolio-border rounded-xl p-5 shadow-lg group">
+            <div class="absolute inset-0 bg-gradient-to-br from-portfolio-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+            <div class="flex items-center gap-2 mb-4 pb-4 border-b border-portfolio-border/50">
+              <div class="w-3 h-3 rounded-full bg-portfolio-border"></div>
+              <div class="text-sm font-mono text-portfolio-muted">~/whoami</div>
+            </div>
+
+            <div class="space-y-3 font-mono text-sm">
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-start">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span class="text-portfolio-muted whitespace-nowrap">name:</span>
+                <span class="text-portfolio-text break-words">{{ profile.name }}</span>
+              </div>
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-start">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span class="text-portfolio-muted whitespace-nowrap">platform:</span>
+                <span class="text-portfolio-text break-words">{{ profile.title }}</span>
+              </div>
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-start">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span class="text-portfolio-muted whitespace-nowrap">focus:</span>
+                <span class="text-portfolio-text leading-tight break-words">{{ profile.focus }}</span>
+              </div>
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-start">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span class="text-portfolio-muted whitespace-nowrap">location:</span>
+                <span class="text-portfolio-text break-words">{{ profile.location }}</span>
+              </div>
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-start">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span class="text-portfolio-muted whitespace-nowrap">availability:</span>
+                <span class="text-portfolio-text break-words">{{ profile.availability }}</span>
+              </div>
+              <div class="grid grid-cols-[1rem_7rem_minmax(0,1fr)] sm:grid-cols-[1rem_8.5rem_minmax(0,1fr)] gap-x-3 items-center h-4">
+                <span class="text-portfolio-accent">&gt;</span>
+                <span></span>
+                <span class="w-2.5 h-4 bg-portfolio-accent/80 animate-pulse"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-section-card>

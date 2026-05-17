@@ -1,0 +1,23 @@
+<app-section-card sectionId="systems">
+  <h2 class="text-2xl font-semibold tracking-tight">Systems in Progress</h2>
+  <div class="mt-4 grid gap-3 md:grid-cols-2">
+    @for (system of systems; track system.title) {
+      <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="text-base font-medium">{{ system.title }}</h3>
+          <app-status-badge [label]="system.status" [classes]="statusClass(system.status)"></app-status-badge>
+        </div>
+
+        <div class="mt-3 text-sm leading-relaxed text-text-muted">
+          <p class="font-semibold text-text-main">Business problem</p>
+          <p class="mt-1">{{ system.businessProblem }}</p>
+        </div>
+
+        <div class="mt-3 text-sm leading-relaxed text-text-muted">
+          <p class="font-semibold text-text-main">Planned direction</p>
+          <p class="mt-1">{{ system.plannedDirection }}</p>
+        </div>
+      </article>
+    }
+  </div>
+</app-section-card>
