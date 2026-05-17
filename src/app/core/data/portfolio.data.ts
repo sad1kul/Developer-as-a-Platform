@@ -1,183 +1,357 @@
 import {
+  ArchitectureLayer,
+  CaseStudy,
   ContextNote,
   ContextTab,
   EngineContext,
   FrameworkEngine,
+  FrameworkEngineOption,
   NavItem,
   PrincipleCard,
+  ProfileIdentity,
+  QuickLink,
+  SortOption,
+  SourceLinks,
+  StatusFilter,
   SystemProgressItem,
+  SystemStatusInfo,
   TechProfileGroup,
-  WorkbenchItem,
-  WorkbenchStatus
+  WorkbenchItem
 } from '../models/portfolio.model';
+
+export const GITHUB_REPO = 'https://github.com/sad1kul/Developer-as-a-Platform';
+export const CV_ASSET_PATH = '/assets/Sadikul-Islam-CV.pdf';
+export const CONTACT_EMAIL = 'sadik@sadikul.me';
+
+export const PROFILE_IDENTITY: ProfileIdentity = {
+  name: 'Sadikul Islam',
+  title: 'Developer-as-a-Platform',
+  subtitle: 'Angular · TypeScript · Cross-framework frontend architecture',
+  roleLine: 'Software Developer',
+  focus:
+    'Angular Signals, typed models, custom-element engines, CRM workflow design, fintech support workflows, and practical developer tooling direction.',
+  summary:
+    'This portfolio is built as a developer platform, not a static project gallery. It shows how I structure frontend systems around business workflows, framework boundaries, and maintainable UI architecture.',
+  location: 'Bangladesh · South Africa experience',
+  availability: 'Open to: Remote · Hybrid · Relocation-ready roles'
+};
 
 export const NAV_ITEMS: NavItem[] = [
   { id: 'overview', label: 'Overview', icon: 'overview' },
   { id: 'workbench', label: 'Workbench', icon: 'workbench' },
-  { id: 'tech-profile', label: 'Tech Profile', icon: 'tech' },
+  { id: 'tech-profile', label: 'Technical Profile', icon: 'tech' },
   { id: 'architecture', label: 'Architecture', icon: 'architecture' },
-  { id: 'systems', label: 'Systems (Soon)', icon: 'systems', soon: true },
-  { id: 'about', label: 'About Me', icon: 'about' },
+  { id: 'case-studies', label: 'Case Studies', icon: 'case-studies' },
+  { id: 'systems', label: 'Systems in Progress', icon: 'systems' },
+  { id: 'about', label: 'About', icon: 'about' },
   { id: 'contact', label: 'Contact', icon: 'contact' }
 ];
 
-export const FRAMEWORK_ENGINES: Array<{ name: FrameworkEngine; available: boolean; note: string }> = [
-  { name: 'Angular', available: true, note: 'Primary engine implemented.' },
-  { name: 'React', available: true, note: 'React custom element engine active.' },
-  { name: 'Svelte', available: true, note: 'Svelte custom element engine active.' }
-];
-
-export const WORKBENCH_ITEMS: WorkbenchItem[] = [
+export const QUICK_LINKS: QuickLink[] = [
   {
-    id: 1250,
-    name: 'Authentication Service',
-    status: 'Active',
-    priority: 'High',
-    updatedAt: '2 min ago',
-    updatedMinutesAgo: 2,
-    description: 'Handles user authentication, JWT validation and session management.',
-    techTags: ['Angular', 'TypeScript', 'RxJS']
+    label: 'GitHub',
+    url: 'https://github.com/sad1kul',
+    icon: 'github',
+    ariaLabel: 'Open GitHub profile'
   },
   {
-    id: 1249,
-    name: 'User Profile Module',
-    status: 'Active',
-    priority: 'Medium',
-    updatedAt: '15 min ago',
-    updatedMinutesAgo: 15,
-    description: 'Maintains profile settings, account preferences and update flows.',
-    techTags: ['Angular', 'Forms', 'REST']
+    label: 'LinkedIn',
+    url: 'https://www.linkedin.com/in/sadikul-islam-553a2669/',
+    icon: 'linkedin',
+    ariaLabel: 'Open LinkedIn profile'
   },
   {
-    id: 1248,
-    name: 'Payment Gateway Adapter',
-    status: 'Pending',
-    priority: 'High',
-    updatedAt: '32 min ago',
-    updatedMinutesAgo: 32,
-    description: 'Abstract adapter layer for payment provider integrations and retries.',
-    techTags: ['Node.js', 'API', 'Validation']
+    label: 'CV',
+    url: CV_ASSET_PATH,
+    icon: 'cv',
+    ariaLabel: 'Open CV PDF'
   },
   {
-    id: 1247,
-    name: 'Notification Service',
-    status: 'In Review',
-    priority: 'Low',
-    updatedAt: '1 hour ago',
-    updatedMinutesAgo: 60,
-    description: 'Coordinates in-app and email notifications using queue-safe rules.',
-    techTags: ['Queue', 'Node.js', 'Templates']
-  },
-  {
-    id: 1246,
-    name: 'Analytics Dashboard',
-    status: 'Error',
-    priority: 'Critical',
-    updatedAt: '2 hours ago',
-    updatedMinutesAgo: 120,
-    description: 'Monitors product-level metrics and failure patterns for debugging.',
-    techTags: ['Charts', 'Observability', 'Alerts']
-  },
-  {
-    id: 1245,
-    name: 'API Contract Monitor',
-    status: 'Warning',
-    priority: 'High',
-    updatedAt: '3 hours ago',
-    updatedMinutesAgo: 180,
-    description: 'Tracks schema drift and breaks between client contracts and APIs.',
-    techTags: ['OpenAPI', 'Testing', 'Automation']
-  },
-  {
-    id: 1244,
-    name: 'Error Tracking Service',
-    status: 'Pending',
-    priority: 'Medium',
-    updatedAt: '5 hours ago',
-    updatedMinutesAgo: 300,
-    description: 'Groups production incidents with breadcrumbs and trace correlation.',
-    techTags: ['Tracing', 'Sourcemaps', 'Incidents']
-  },
-  {
-    id: 1243,
-    name: 'Deployment Pipeline',
-    status: 'Active',
-    priority: 'Medium',
-    updatedAt: '7 hours ago',
-    updatedMinutesAgo: 420,
-    description: 'Automates environment checks, deployment gates and rollback control.',
-    techTags: ['CI/CD', 'GitHub', 'Quality Gates']
+    label: 'Email',
+    url: `mailto:${CONTACT_EMAIL}`,
+    icon: 'email',
+    ariaLabel: 'Send email to Sadikul Islam'
   }
 ];
 
-export const STATUS_FILTERS: Array<'All Status' | WorkbenchStatus> = [
-  'All Status',
-  'Active',
-  'Pending',
-  'Warning',
-  'Error',
-  'In Review'
+export const SOURCE_LINKS: SourceLinks = {
+  angularWorkbench: `${GITHUB_REPO}/tree/main/src/app`,
+  reactEngine: `${GITHUB_REPO}/blob/main/engines/react-workbench/src/ReactWorkbench.tsx`,
+  svelteEngine: `${GITHUB_REPO}/blob/main/engines/svelte-workbench/src/SvelteWorkbench.svelte`,
+  dataModels: `${GITHUB_REPO}/blob/main/src/app/core/models/portfolio.model.ts`,
+  caseStudies: `${GITHUB_REPO}/blob/main/src/app/core/data/portfolio.data.ts`
+};
+
+export const SYSTEM_STATUS: SystemStatusInfo = {
+  live: 'Live: sadikul.me',
+  lastUpdated: 'Last updated: May 2026',
+  version: 'Version: v1.0.0'
+};
+
+export const FRAMEWORK_ENGINES: FrameworkEngineOption[] = [
+  { name: 'Angular', available: true, note: 'Primary shell and native workbench implementation.' },
+  { name: 'React', available: true, note: 'Custom element engine with shadow DOM isolation.' },
+  { name: 'Svelte', available: true, note: 'Custom element engine with compiled reactivity.' }
 ];
 
-export const SORT_OPTIONS = ['Newest', 'Oldest', 'Priority'] as const;
+export const WORKBENCH_DISCLAIMER =
+  'Built from scratch as a portfolio demonstration of cross-framework component architecture. Uses local demo data to show filtering, sorting, state handling, and framework integration.';
+
+export const WORKBENCH_ITEMS: WorkbenchItem[] = [
+  {
+    id: 8601,
+    name: 'Travel Booking Workflow',
+    status: 'Active',
+    priority: 'High',
+    updatedAt: '4 min ago',
+    updatedMinutesAgo: 4,
+    category: 'CRM Operations',
+    description:
+      'Coordinates search, booking, and reservation steps inside a CRM-style workflow used for travel support operations.',
+    techTags: ['Angular', 'TypeScript', 'Angular Signals']
+  },
+  {
+    id: 8602,
+    name: 'Customer Profile Lookup',
+    status: 'Active',
+    priority: 'Medium',
+    updatedAt: '18 min ago',
+    updatedMinutesAgo: 18,
+    category: 'Support Workflow',
+    description:
+      'Represents a support workflow for finding customer details, linked service records, and recent booking context.',
+    techTags: ['Typed Models', 'Search UX', 'State Mapping']
+  },
+  {
+    id: 8603,
+    name: 'Transaction Dispute Queue',
+    status: 'Pending',
+    priority: 'High',
+    updatedAt: '37 min ago',
+    updatedMinutesAgo: 37,
+    category: 'Fintech Support',
+    description:
+      'Tracks disputed transactions that require support review, evidence collection, and escalation routing.',
+    techTags: ['Angular', 'Workflow Rules', 'Queue Logic']
+  },
+  {
+    id: 8604,
+    name: 'Proof-of-Payment Request',
+    status: 'In Review',
+    priority: 'Medium',
+    updatedAt: '58 min ago',
+    updatedMinutesAgo: 58,
+    category: 'Fintech Operations',
+    description:
+      'Models a support action for requesting or generating transaction confirmation artifacts for customers and agents.',
+    techTags: ['Forms', 'Template UX', 'Service Patterns']
+  },
+  {
+    id: 8605,
+    name: 'AI Debug Session Monitor',
+    status: 'Warning',
+    priority: 'Critical',
+    updatedAt: '1 hour ago',
+    updatedMinutesAgo: 96,
+    category: 'Developer Tooling',
+    description:
+      'Represents a developer-tooling workflow for tracking runtime issues while pairing with AI-assisted debugging tools.',
+    techTags: ['Console Tracing', 'Runtime Signals', 'DevTools']
+  },
+  {
+    id: 8606,
+    name: 'API Contract Drift Checker',
+    status: 'Error',
+    priority: 'High',
+    updatedAt: '2 hours ago',
+    updatedMinutesAgo: 125,
+    category: 'Integration Quality',
+    description:
+      'Highlights frontend/backend contract mismatch risks between expected and actual API response payloads.',
+    techTags: ['TypeScript', 'Schema Contracts', 'Error Handling']
+  },
+  {
+    id: 8607,
+    name: 'Support Ticket Escalation Flow',
+    status: 'Pending',
+    priority: 'High',
+    updatedAt: '2 hours ago',
+    updatedMinutesAgo: 162,
+    category: 'Support Operations',
+    description:
+      'Models how support cases move from first-line review to technical escalation with clear ownership hand-off.',
+    techTags: ['Case Routing', 'Status Modeling', 'Audit Trail']
+  },
+  {
+    id: 8608,
+    name: 'CRM Reservation Flow',
+    status: 'Active',
+    priority: 'Medium',
+    updatedAt: '4 hours ago',
+    updatedMinutesAgo: 240,
+    category: 'CRM Workflow',
+    description:
+      'Represents reservation state changes across create, modify, and cancellation actions in an internal CRM dashboard.',
+    techTags: ['Angular Components', 'State Transitions', 'UI Architecture']
+  }
+];
+
+export const STATUS_FILTERS: StatusFilter[] = ['All Status', 'Active', 'Pending', 'Warning', 'Error', 'In Review'];
+export const SORT_OPTIONS: SortOption[] = ['Newest', 'Oldest', 'Priority'];
 
 export const PRINCIPLE_CARDS: PrincipleCard[] = [
   {
-    title: 'Clean Code',
-    description: 'Readable, maintainable and scalable code.',
-    icon: 'code'
-  },
-  {
-    title: 'Performance',
-    description: 'Optimized for speed and smooth user experience.',
-    icon: 'performance'
-  },
-  {
-    title: 'Developer Experience',
-    description: 'Tools, automation and clear workflows.',
-    icon: 'dx'
-  },
-  {
-    title: 'Problem Solver',
-    description: 'I enjoy solving real-world technical problems.',
-    icon: 'solver'
-  },
-  {
-    title: 'Architecture Mindset',
-    description: 'I care about structure, data flow and maintainability.',
+    title: 'Cross-framework by Design',
+    description: 'Angular shell with React and Svelte engines mounted as isolated custom elements.',
     icon: 'architecture'
   },
   {
-    title: 'Practical Delivery',
-    description: 'Useful working software over unnecessary complexity.',
+    title: 'Typed by Default',
+    description: 'Typed models and explicit interfaces to keep data contracts readable and predictable.',
+    icon: 'code'
+  },
+  {
+    title: 'Signals-first UI State',
+    description: 'Angular Signals and computed state are used for search, sorting, selection, and KPIs.',
+    icon: 'performance'
+  },
+  {
+    title: 'Business Workflow Thinking',
+    description: 'Portfolio modules are modeled around CRM and fintech support operations, not generic demos.',
+    icon: 'solver'
+  },
+  {
+    title: 'Practical Architecture',
+    description: 'Data, state services, feature components, and layout concerns are intentionally separated.',
     icon: 'delivery'
+  },
+  {
+    title: 'Developer Tooling Direction',
+    description: 'Case studies include debugging workflow concepts where AI tools need runtime browser context.',
+    icon: 'dx'
   }
 ];
 
 export const TECH_PROFILE_GROUPS: TechProfileGroup[] = [
   {
-    title: 'Frontend',
-    items: ['Angular', 'TypeScript', 'RxJS', 'React', 'Svelte', 'HTML', 'SCSS']
+    title: 'Angular Frontend',
+    items: ['Angular', 'TypeScript', 'Angular Signals', 'Standalone Components', 'Tailwind']
   },
   {
-    title: 'Backend',
-    items: ['Node.js', 'Express', 'REST APIs', 'JWT', 'Zod', 'Middleware']
+    title: 'Cross-framework Engines',
+    items: ['React Custom Elements', 'Svelte Custom Elements', 'Shadow DOM Isolation', 'Vite Builds']
   },
   {
-    title: 'Architecture',
-    items: ['Component design', 'Routing', 'Service layers', 'State management', 'API contracts']
+    title: 'Architecture & Models',
+    items: ['Typed Models', 'Service Boundaries', 'State Derivation', 'Component Separation']
   },
   {
-    title: 'Tooling',
-    items: ['Git', 'GitHub', 'Postman', 'Browser DevTools', 'cPanel deployment']
+    title: 'Business Workflows',
+    items: ['CRM Reservation Flow', 'Travel Booking Flow', 'Support Escalation', 'Case-driven UI']
   },
   {
-    title: 'Quality',
-    items: ['Debugging', 'Error handling', 'Testing basics', 'Clean code', 'Maintainable structure']
+    title: 'Fintech Support Context',
+    items: ['Transaction Disputes', 'Proof-of-Payment Flows', 'Status-driven Queues', 'Escalation Paths']
   },
   {
-    title: 'Currently improving',
-    items: ['Advanced testing', 'CI/CD', 'System design', 'Cloud deployment', 'Deeper backend architecture']
+    title: 'Developer Direction',
+    items: ['AI Debug Bridge Concept', 'API Contract Drift Detection', 'DevTools-first Diagnosis']
+  }
+];
+
+export const ARCHITECTURE_SUMMARY =
+  'Angular acts as the shell and orchestration layer, while the workbench demonstrates shared workflow behavior across Angular, React, and Svelte engines with consistent typed demo data.';
+
+export const ARCHITECTURE_LAYERS: ArchitectureLayer[] = [
+  {
+    title: 'Shell Layer',
+    description: 'Angular layout, navigation, status bar, and section routing behavior.',
+    accent: 'emerald'
+  },
+  {
+    title: 'Workbench Layer',
+    description: 'Interactive module table with filtering, sorting, selection, and detail context.',
+    accent: 'cyan'
+  },
+  {
+    title: 'Engine Layer',
+    description: 'React and Svelte engines loaded as custom elements with safe mount/unmount control.',
+    accent: 'purple'
+  }
+];
+
+export const CASE_STUDIES: CaseStudy[] = [
+  {
+    id: 'cross-framework-workbench',
+    title: 'Cross-Framework Workbench',
+    framing: 'Portfolio case study',
+    problem:
+      'Most portfolios show static project cards. I wanted to demonstrate how the same interactive UI can be implemented across Angular, React, and Svelte.',
+    role:
+      'Designed the Angular shell, workbench structure, local data model, framework selector, and right-side technical context panel.',
+    tech: ['Angular', 'TypeScript', 'Angular Signals', 'React', 'Svelte', 'Custom Elements', 'Tailwind', 'Vite'],
+    challenge:
+      'Keeping different framework engines isolated while preserving a consistent UI, data shape, and user experience.',
+    solution:
+      'Used Angular as the shell and mounted React/Svelte engines as custom elements. The right panel explains state, architecture, and trade-offs per framework.',
+    outcome:
+      'Demonstrates framework boundaries, state management trade-offs, and frontend architecture thinking using local demo data.',
+    sourceLabel: 'View case-study data',
+    sourceUrl: SOURCE_LINKS.caseStudies
+  },
+  {
+    id: 'travel-crm-booking-workflow',
+    title: 'Travel CRM / Booking Workflow',
+    framing: 'Workflow-based demonstration',
+    problem:
+      'Travel agents need a fast way to search customers, create bookings, and manage reservations without losing context.',
+    role:
+      'Frontend architecture, Angular component planning, workflow structure, and reusable UI decisions around CRM-style processes.',
+    tech: ['Angular', 'TypeScript', 'Services', 'Workflow Modeling'],
+    challenge:
+      'Keeping navigation persistent while loading search, booking, and reservation features as connected flows.',
+    solution:
+      'Designed a shell-style workflow where search, booking, and reservation screens behave as connected feature areas.',
+    outcome:
+      'Shows practical CRM and business-system thinking as a portfolio demonstration, not a production CRM claim.',
+    sourceLabel: 'View module implementation direction',
+    sourceUrl: SOURCE_LINKS.angularWorkbench
+  },
+  {
+    id: 'fintech-transaction-support-workflow',
+    title: 'Fintech Transaction Support Workflow',
+    framing: 'Technical concept based on support patterns',
+    problem:
+      'Support teams need a faster way to inspect customer transactions, filter records, and create dispute tickets.',
+    role:
+      'UI logic design, filter behavior, date handling direction, and support workflow mapping from queue to escalation.',
+    tech: ['Angular', 'TypeScript', 'Forms', 'Status Modeling'],
+    challenge:
+      'Making transaction categories understandable while reducing repetitive manual support steps.',
+    solution:
+      'Modeled a structured transaction workflow with filters, selected details, and guided dispute support actions.',
+    outcome:
+      'Shows fintech workflow understanding and practical frontend problem-solving without overstating production delivery.',
+    sourceLabel: 'View source and data model',
+    sourceUrl: SOURCE_LINKS.dataModels
+  },
+  {
+    id: 'ai-browser-debug-bridge',
+    title: 'AI Browser Debug Bridge',
+    framing: 'System design direction',
+    problem:
+      'AI coding tools often cannot see browser console logs, network failures, or DOM state during debugging.',
+    role:
+      'Designed the concept and architecture direction for bridging browser runtime context with a coding assistant workflow.',
+    tech: ['Browser Extension Concept', 'WebSocket/Native Host Pattern', 'Local Debug Agent', 'Developer Tooling'],
+    challenge:
+      'Connecting runtime browser signals to coding context without forcing developers to manually copy errors.',
+    solution:
+      'Conceptualized a browser debugging bridge that can pass console, network, and DOM context into an assistant workflow.',
+    outcome:
+      'Shows developer-tooling thinking and a future direction for the portfolio roadmap.',
+    sourceLabel: 'Portfolio notes in progress',
+    sourceUrl: SOURCE_LINKS.caseStudies
   }
 ];
 
@@ -185,328 +359,266 @@ export const SYSTEMS_IN_PROGRESS: SystemProgressItem[] = [
   {
     title: 'Developer-as-a-Platform',
     status: 'Building',
-    description:
-      'This portfolio itself, built as a developer portal-style profile to demonstrate frontend architecture and technical thinking.'
-  },
-  {
-    title: 'Reactive Data Workbench',
-    status: 'Building',
-    description:
-      'A cross-framework UI experiment comparing Angular, React and Svelte approaches to state, reactivity and component architecture.'
+    businessProblem:
+      'Recruiters often see static portfolios that do not show real frontend architecture decisions or state modeling depth.',
+    plannedDirection:
+      'Continue expanding the workbench and case-study depth with clearer architecture decisions and technical write-ups.'
   },
   {
     title: 'TrustBridge',
     status: 'Planned',
-    description:
-      'Fintech complaint and dispute intelligence platform. A full case study will be added later.'
+    businessProblem:
+      'Failed digital transactions often create confusion between users, support agents, and developers.',
+    plannedDirection:
+      'Design a workflow-first support system that aligns customer actions, evidence collection, and engineering escalation paths.'
   },
   {
     title: 'SignalDesk',
     status: 'Planned',
-    description:
-      'Proactive user-friction and incident radar. A full case study will be added later.'
+    businessProblem:
+      'Teams often discover user friction too late, after support tickets increase.',
+    plannedDirection:
+      'Prototype an internal signal board that combines product behavior indicators with support trends for earlier intervention.'
   },
   {
     title: 'AI Browser Debug Bridge',
     status: 'Planned',
-    description:
-      'Developer productivity tool connecting browser runtime context with coding assistants.'
+    businessProblem:
+      'Coding assistants often lack browser runtime context during debugging.',
+    plannedDirection:
+      'Explore browser-side data collection and local bridging patterns that can provide runtime context to coding assistants.'
   }
 ];
+
+export const ABOUT_PARAGRAPHS: string[] = [
+  'I work across frontend architecture and business-aware UI workflows. My background combines software development with operational support context, which helps me design interfaces that are technically clear and practically useful.',
+  'I focus on Angular and TypeScript, and I actively explore cross-framework architecture through React and Svelte custom elements. I am building this portfolio as a developer platform to show how I think through real workflow problems, not just visual components.'
+];
+
+export const CONTACT_OPPORTUNITY_TEXT =
+  'Open to software developer, frontend engineer, Angular-focused, CRM workflow, fintech support workflow, and developer-tooling oriented roles.';
 
 export const CONTEXT_TABS: ContextTab[] = ['Source Code', 'State', 'Architecture', 'Trade-offs'];
 
 export const STATE_NOTES: ContextNote[] = [
   {
-    heading: 'Local State',
+    heading: 'Signal-driven Shell State',
     points: [
-      'Signals manage search, filters, sorting, selected row and tab state.',
-      'Workbench data starts from local typed mock data for MVP speed.'
+      'Angular Signals track search, filters, sorting, selection, and panel context state.',
+      'Computed values derive KPIs and visible rows from local demo data without inflated numbers.'
     ]
   },
   {
-    heading: 'Computed View',
+    heading: 'Service Boundaries',
     points: [
-      'Filtered rows are derived using query + status + sort controls.',
-      'Selected item detail remains in sync with current view.'
+      'WorkbenchStateService owns row-level state and simulation updates.',
+      'EngineService owns framework engine selection, script loading, and external element mounting.'
     ]
   },
   {
-    heading: 'Engine Mode',
+    heading: 'Cross-framework Isolation',
     points: [
-      'Angular renders natively inside the shell when selected.',
-      'React and Svelte mount as isolated custom elements when selected.'
+      'Angular is the host shell while React and Svelte run in isolated custom-element boundaries.',
+      'Engine switching clears host nodes to keep mount/unmount behavior predictable.'
     ]
   }
 ];
 
 export const ARCHITECTURE_NOTES: ContextNote[] = [
   {
-    heading: 'Angular Shell',
+    heading: 'Angular Shell Orchestration',
     points: [
-      'App shell coordinates navigation, status context and section anchors.',
-      'Standalone component architecture keeps this version simple and extensible.'
+      'Navigation, section flow, and context panel stay in Angular for predictable shell behavior.',
+      'Feature components render data and interactions while services coordinate shared state.'
     ]
   },
   {
-    heading: 'Workbench Core',
+    heading: 'Engine Contract',
     points: [
-      'The workbench is the first technical proof of the portfolio concept.',
-      'Typed data + predictable UI state demonstrate maintainable engineering patterns.'
+      'React and Svelte engines use the same module shape and interaction rules for fair comparison.',
+      'Custom element registration checks prevent duplicate definition errors.'
     ]
   },
   {
-    heading: 'Future Engines',
+    heading: 'Portfolio as Platform',
     points: [
-      'React and Svelte are integrated as lazy-loaded custom element workbench engines.',
-      'Right context panel documents decisions, trade-offs and implementation notes.'
+      'Case studies and module naming are tied to CRM, fintech support, and developer-tooling patterns.',
+      'The system is intentionally transparent about local demo data and planned roadmap areas.'
     ]
   }
-];
-
-export const ANGULAR_STRENGTHS: string[] = [
-  'Strong structure and conventions',
-  'TypeScript-first development model',
-  'Scalable architecture for larger applications',
-  'Robust ecosystem and tooling'
-];
-
-export const ANGULAR_TRADEOFFS: string[] = [
-  'More boilerplate than smaller libraries',
-  'Steeper learning curve',
-  'Requires discipline in boundaries and organization'
-];
-
-export const COMPARED_FRAMEWORK_NOTES: Array<{ framework: 'React' | 'Svelte'; note: string }> = [
-  { framework: 'React', note: 'Implemented as a lazy-loaded custom element using React state and memoized views.' },
-  { framework: 'Svelte', note: 'Implemented as a lazy-loaded custom element using native Svelte reactivity.' }
 ];
 
 const angularSourceLines = [
   '<span class="token-keyword">readonly</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">computed</span><span class="token-punc">(() =&gt; {</span>',
   '  <span class="token-keyword">const</span> <span class="token-property">term</span> <span class="token-punc">=</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">searchQuery</span><span class="token-punc">().</span><span class="token-function">trim</span><span class="token-punc">().</span><span class="token-function">toLowerCase</span><span class="token-punc">();</span>',
-  '  <span class="token-keyword">return</span> <span class="token-function">sortItems</span><span class="token-punc">(</span><span class="token-function">filterItems</span><span class="token-punc">(</span><span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">items</span><span class="token-punc">(),</span> <span class="token-property">term</span><span class="token-punc">));</span>',
+  '  <span class="token-keyword">return</span> <span class="token-function">filterAndSortItems</span><span class="token-punc">(</span><span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">items</span><span class="token-punc">(),</span> <span class="token-property">term</span><span class="token-punc">,</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">statusFilter</span><span class="token-punc">(),</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">sortBy</span><span class="token-punc">());</span>',
   '<span class="token-punc">});</span>',
   '',
-  '<span class="token-keyword">readonly</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span> <span class="token-function">computed</span><span class="token-punc">(() =&gt;</span>',
-  '  <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">filteredItems</span><span class="token-punc">().</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">selectedItemId</span><span class="token-punc">())</span>',
-  '  <span class="token-punc">??</span> <span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">filteredItems</span><span class="token-punc">()[</span><span class="token-number">0</span><span class="token-punc">]</span>',
+  '<span class="token-keyword">readonly</span> <span class="token-property">kpiMetrics</span> <span class="token-punc">=</span> <span class="token-function">computed</span><span class="token-punc">(() =&gt;</span>',
+  '  <span class="token-function">buildKpiMetrics</span><span class="token-punc">(</span><span class="token-keyword">this</span><span class="token-punc">.</span><span class="token-function">items</span><span class="token-punc">())</span>',
   '<span class="token-punc">);</span>'
 ];
 
 const reactSourceLines = [
   '<span class="token-keyword">const</span> <span class="token-punc">[</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">setItems</span><span class="token-punc">]</span> <span class="token-punc">=</span> <span class="token-function">useState</span><span class="token-punc">(</span><span class="token-property">createWorkbenchItems</span><span class="token-punc">);</span>',
-  '<span class="token-keyword">const</span> <span class="token-punc">[</span><span class="token-property">selectedItemId</span><span class="token-punc">,</span> <span class="token-property">setSelectedItemId</span><span class="token-punc">]</span> <span class="token-punc">=</span> <span class="token-function">useState</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]?.</span><span class="token-property">id</span> <span class="token-punc">??</span> <span class="token-number">0</span><span class="token-punc">);</span>',
-  '',
   '<span class="token-keyword">const</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">useMemo</span><span class="token-punc">(() =&gt;</span>',
   '  <span class="token-function">filterAndSortItems</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span><span class="token-punc">),</span>',
   '  <span class="token-punc">[</span><span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span><span class="token-punc">]</span>',
   '<span class="token-punc">);</span>',
   '',
-  '<span class="token-keyword">const</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span> <span class="token-function">useMemo</span><span class="token-punc">(() =&gt;</span>',
-  '  <span class="token-property">filteredItems</span><span class="token-punc">.</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-property">selectedItemId</span><span class="token-punc">)</span> <span class="token-punc">??</span> <span class="token-property">filteredItems</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">],</span>',
-  '  <span class="token-punc">[</span><span class="token-property">filteredItems</span><span class="token-punc">,</span> <span class="token-property">selectedItemId</span><span class="token-punc">]</span>',
+  '<span class="token-keyword">const</span> <span class="token-property">kpiMetrics</span> <span class="token-punc">=</span> <span class="token-function">useMemo</span><span class="token-punc">(() =&gt;</span>',
+  '  <span class="token-function">itemKpis</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">),</span>',
+  '  <span class="token-punc">[</span><span class="token-property">items</span><span class="token-punc">]</span>',
   '<span class="token-punc">);</span>'
 ];
 
 const svelteSourceLines = [
   '<span class="token-keyword">let</span> <span class="token-property">items</span> <span class="token-punc">=</span> <span class="token-function">createWorkbenchItems</span><span class="token-punc">();</span>',
-  '<span class="token-keyword">let</span> <span class="token-property">selectedItemId</span> <span class="token-punc">=</span> <span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]?.</span><span class="token-property">id</span> <span class="token-punc">??</span> <span class="token-number">0</span><span class="token-punc">;</span>',
   '',
   '<span class="token-property">$</span><span class="token-punc">:</span> <span class="token-property">filteredItems</span> <span class="token-punc">=</span> <span class="token-function">filterAndSortItems</span><span class="token-punc">(</span>',
   '  <span class="token-property">items</span><span class="token-punc">,</span> <span class="token-property">searchQuery</span><span class="token-punc">,</span> <span class="token-property">statusFilter</span><span class="token-punc">,</span> <span class="token-property">sortBy</span>',
   '<span class="token-punc">);</span>',
   '',
-  '<span class="token-property">$</span><span class="token-punc">:</span> <span class="token-property">selectedItem</span> <span class="token-punc">=</span>',
-  '  <span class="token-property">filteredItems</span><span class="token-punc">.</span><span class="token-function">find</span><span class="token-punc">((</span><span class="token-property">item</span><span class="token-punc">)</span> <span class="token-punc">=&gt;</span> <span class="token-property">item</span><span class="token-punc">.</span><span class="token-property">id</span> <span class="token-punc">===</span> <span class="token-property">selectedItemId</span><span class="token-punc">)</span>',
-  '  <span class="token-punc">??</span> <span class="token-property">filteredItems</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">]</span> <span class="token-punc">??</span> <span class="token-property">items</span><span class="token-punc">[</span><span class="token-number">0</span><span class="token-punc">];</span>'
+  '<span class="token-property">$</span><span class="token-punc">:</span> <span class="token-property">kpiMetrics</span> <span class="token-punc">=</span> <span class="token-function">itemKpis</span><span class="token-punc">(</span><span class="token-property">items</span><span class="token-punc">);</span>'
 ];
 
 export const ENGINE_CONTEXTS: Record<FrameworkEngine, EngineContext> = {
   Angular: {
     source: {
-      label: 'Angular (Signals)',
-      filename: 'workbench.component.ts',
+      label: 'Angular (Signals + Services)',
+      filename: 'workbench-state.service.ts',
       lines: angularSourceLines,
       plain: [
         'readonly filteredItems = computed(() => {',
         '  const term = this.searchQuery().trim().toLowerCase();',
-        '  return sortItems(filterItems(this.items(), term));',
+        '  return filterAndSortItems(this.items(), term, this.statusFilter(), this.sortBy());',
         '});',
         '',
-        'readonly selectedItem = computed(() =>',
-        '  this.filteredItems().find((item) => item.id === this.selectedItemId())',
-        '  ?? this.filteredItems()[0]',
+        'readonly kpiMetrics = computed(() =>',
+        '  buildKpiMetrics(this.items())',
         ');'
       ].join('\n')
     },
     stateNotes: STATE_NOTES,
     architectureNotes: ARCHITECTURE_NOTES,
-    strengths: ANGULAR_STRENGTHS,
-    tradeoffs: ANGULAR_TRADEOFFS,
+    strengths: [
+      'Strong app-shell conventions for long-lived systems',
+      'Signals keep derived state explicit and testable',
+      'Typed service boundaries reduce component-level logic weight',
+      'Works well for business workflow-heavy interfaces'
+    ],
+    tradeoffs: [
+      'More structural upfront setup than smaller libraries',
+      'Service boundaries require consistent architecture discipline',
+      'Cross-framework integration still needs careful shared contracts'
+    ],
     comparedFrameworkNotes: [
-      { framework: 'React', note: 'Available as a lazy-loaded custom element mounted only inside the workbench area.' },
-      { framework: 'Svelte', note: 'Available as a lazy-loaded custom element mounted only inside the workbench area.' }
+      { framework: 'React', note: 'React engine runs as isolated custom element under Angular orchestration.' },
+      { framework: 'Svelte', note: 'Svelte engine is mounted using the same host lifecycle and data assumptions.' }
     ]
   },
   React: {
     source: {
-      label: 'React (TSX)',
-      filename: 'ReactWorkbench.tsx',
+      label: 'React (Custom Element Engine)',
+      filename: 'engines/react-workbench/src/ReactWorkbench.tsx',
       lines: reactSourceLines,
       plain: [
         'const [items, setItems] = useState(createWorkbenchItems);',
-        'const [selectedItemId, setSelectedItemId] = useState(items[0]?.id ?? 0);',
-        '',
         'const filteredItems = useMemo(() =>',
         '  filterAndSortItems(items, searchQuery, statusFilter, sortBy),',
         '  [items, searchQuery, statusFilter, sortBy]',
         ');',
         '',
-        'const selectedItem = useMemo(() =>',
-        '  filteredItems.find((item) => item.id === selectedItemId) ?? filteredItems[0],',
-        '  [filteredItems, selectedItemId]',
-        ');'
+        'const kpiMetrics = useMemo(() => itemKpis(items), [items]);'
       ].join('\n')
     },
     stateNotes: [
       {
-        heading: 'React Local State',
+        heading: 'Hooks State',
         points: [
-          'useState owns rows, query, filter, sort, selected row and simulated refresh state.',
-          'The engine lives inside <react-data-workbench> and does not replace the Angular shell.'
+          'React engine uses local hook state for rows, filters, sorting, selection, and simulation metadata.',
+          'Derived lists and KPI values are memoized for predictable UI updates.'
         ]
       },
       {
-        heading: 'Memoized View',
+        heading: 'Custom Element Boundary',
         points: [
-          'useMemo derives filtered rows from local state and mock data.',
-          'Selected detail falls back to the first visible row when filters hide the previous selection.'
+          'React is wrapped inside <react-data-workbench> and rendered into a shadow root.',
+          'Unmount logic runs in disconnectedCallback to avoid stale subscriptions and memory leaks.'
         ]
       },
       {
-        heading: 'Engine Boundary',
+        heading: 'Host Coordination',
         points: [
-          'React is loaded from /engines/react-workbench.js only when selected.',
-          'The custom element checks registration before defining itself to avoid duplicate registration errors.'
+          'Angular controls when the script is loaded and when the custom element is mounted.',
+          'Duplicate custom-element registration is prevented before define() calls.'
         ]
       }
     ],
-    architectureNotes: [
-      {
-        heading: 'React Custom Element',
-        points: [
-          'React renders into a shadow-root custom element using react-dom/client createRoot.',
-          'The element unmounts the React root in disconnectedCallback.'
-        ]
-      },
-      {
-        heading: 'Angular Host',
-        points: [
-          'Angular controls framework selection and script loading.',
-          'The shell clears the engine host before mounting a different custom element.'
-        ]
-      },
-      {
-        heading: 'Shared Contract',
-        points: [
-          'The React workbench uses the same module rows, statuses, priorities and interactions as Angular.',
-          'Mock data stays local and clearly labeled as demo data.'
-        ]
-      }
-    ],
+    architectureNotes: ARCHITECTURE_NOTES,
     strengths: [
-      'Small isolated engine boundary',
-      'Familiar hooks-based state model',
-      'useMemo keeps derived row views predictable',
-      'Easy to compare with Angular signal-based state'
+      'Familiar hook-based local state model',
+      'Engine isolation is explicit and easy to reason about',
+      'Useful comparison baseline against Angular Signals'
     ],
     tradeoffs: [
-      'Adds React runtime cost when this engine is selected',
-      'Custom element styling must be maintained beside the Angular UI',
-      'State is isolated from Angular unless explicit events are wired'
+      'Adds React runtime only when selected',
+      'Visual styling must be maintained in a separate engine stylesheet',
+      'No direct Angular template bindings across the custom-element boundary'
     ],
     comparedFrameworkNotes: [
-      { framework: 'Angular', note: 'Primary shell remains Angular and owns layout, navigation and context.' },
-      { framework: 'Svelte', note: 'Sibling custom element engine using compiler-driven reactivity.' }
+      { framework: 'Angular', note: 'Angular remains the shell and state context owner for the full page.' },
+      { framework: 'Svelte', note: 'Svelte engine offers the same feature surface with different reactivity semantics.' }
     ]
   },
   Svelte: {
     source: {
-      label: 'Svelte',
-      filename: 'SvelteWorkbench.svelte',
+      label: 'Svelte (Custom Element Engine)',
+      filename: 'engines/svelte-workbench/src/SvelteWorkbench.svelte',
       lines: svelteSourceLines,
       plain: [
         'let items = createWorkbenchItems();',
-        'let selectedItemId = items[0]?.id ?? 0;',
-        '',
         '$: filteredItems = filterAndSortItems(items, searchQuery, statusFilter, sortBy);',
-        '',
-        '$: selectedItem =',
-        '  filteredItems.find((item) => item.id === selectedItemId)',
-        '  ?? filteredItems[0] ?? items[0];'
+        '$: kpiMetrics = itemKpis(items);'
       ].join('\n')
     },
     stateNotes: [
       {
-        heading: 'Native Reactivity',
+        heading: 'Compiler Reactivity',
         points: [
-          'Svelte variables hold rows, query, filter, sort and selected row state.',
-          'Reactive statements derive filtered rows and selected detail without an external state library.'
+          'Svelte uses reactive statements for filtered rows, selection fallback, and KPI derivation.',
+          'State remains local to the element for predictable engine isolation.'
         ]
       },
       {
-        heading: 'Compiled Engine',
+        heading: 'Custom Element Delivery',
         points: [
-          'The component compiles as <svelte-data-workbench> using Svelte custom element support.',
-          'The engine bundle is loaded only when Svelte is selected.'
+          'Svelte compiles directly to <svelte-data-workbench> with shadow DOM enabled.',
+          'Angular mounts and unmounts the element based on framework selection.'
         ]
       },
       {
-        heading: 'Local Demo Data',
+        heading: 'Shared Data Contract',
         points: [
-          'The same workbench rows are used for honest cross-framework comparison.',
-          'Simulated updates stay local and are labeled as simulation.'
+          'Svelte engine uses the same module structure and KPI logic as Angular and React.',
+          'This keeps framework comparisons focused on implementation style, not data differences.'
         ]
       }
     ],
-    architectureNotes: [
-      {
-        heading: 'Svelte Custom Element',
-        points: [
-          'Svelte compiles the workbench into a browser custom element.',
-          'Styles are scoped to the engine so it remains visually consistent without leaking into the shell.'
-        ]
-      },
-      {
-        heading: 'Angular Host',
-        points: [
-          'Angular lazy-loads /engines/svelte-workbench.js on selection.',
-          'Switching engines removes the previous custom element before mounting the next one.'
-        ]
-      },
-      {
-        heading: 'Comparison Surface',
-        points: [
-          'The Svelte engine exposes the same KPIs, controls, rows and detail panel as Angular and React.',
-          'The right panel documents the framework-specific state model.'
-        ]
-      }
-    ],
+    architectureNotes: ARCHITECTURE_NOTES,
     strengths: [
-      'Minimal component state syntax',
-      'Compiler-driven reactivity keeps derived values concise',
-      'Small engine bundle compared with runtime-heavy approaches',
-      'Clear contrast with Angular signals and React hooks'
+      'Concise reactive syntax',
+      'Small compiled runtime footprint for this engine surface',
+      'Clear state derivation with minimal ceremony'
     ],
     tradeoffs: [
-      'Separate Svelte build pipeline must stay in sync with Angular deployment',
-      'Custom element integration limits direct Angular template binding',
-      'Team familiarity may be lower than Angular or React'
+      'Separate Svelte build pipeline must stay aligned with Angular deploys',
+      'Cross-boundary events need explicit contracts',
+      'Fewer teams have deep Svelte production experience than Angular/React'
     ],
     comparedFrameworkNotes: [
-      { framework: 'Angular', note: 'Primary shell remains Angular and owns layout, navigation and context.' },
-      { framework: 'React', note: 'Sibling custom element engine using hooks and memoized derived state.' }
+      { framework: 'Angular', note: 'Angular keeps routing, navigation, and overall page orchestration.' },
+      { framework: 'React', note: 'React and Svelte both run as lazy-loaded custom-element engines.' }
     ]
   }
 };

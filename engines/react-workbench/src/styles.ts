@@ -249,7 +249,7 @@ select:focus-visible {
 
 table {
   width: 100%;
-  min-width: 1120px;
+  min-width: 1240px;
   border-collapse: collapse;
   table-layout: fixed;
 }
@@ -283,7 +283,8 @@ td {
 td:nth-child(1),
 td:nth-child(3),
 td:nth-child(4),
-td:nth-child(5) {
+td:nth-child(5),
+td:nth-child(6) {
   white-space: nowrap;
 }
 
@@ -430,7 +431,7 @@ td .tag-list {
 
 @media (min-width: 1280px) {
   .kpi-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 

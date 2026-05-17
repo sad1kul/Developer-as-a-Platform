@@ -1,0 +1,8 @@
+<app-section-card sectionId="about">
+  <h2 class="text-2xl font-semibold tracking-tight">About</h2>
+  @for (paragraph of paragraphs; track paragraph) {
+    <p class="mt-4 text-sm leading-relaxed text-text-muted sm:text-base">
+      {{ paragraph }}
+    </p>
+  }
+</app-section-card>
