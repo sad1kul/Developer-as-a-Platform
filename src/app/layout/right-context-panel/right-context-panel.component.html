@@ -1,0 +1,176 @@
+<aside
+  class="rounded-2xl border border-border-soft/90 bg-bg-surface/90 p-4 shadow-soft backdrop-blur lg:col-span-2 min-[1900px]:col-span-1 min-[1900px]:sticky min-[1900px]:top-4 min-[1900px]:h-[calc(100vh-2rem)] min-[1900px]:overflow-y-auto"
+>
+  <div class="flex items-center gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Technical context tabs">
+    @for (tab of engineService.contextTabs; track tab) {
+      <button
+        type="button"
+        role="tab"
+        [id]="contextTabId(tab)"
+        [attr.aria-selected]="tab === engineService.activeContextTab()"
+        [attr.aria-controls]="contextPanelId(tab)"
+        class="whitespace-nowrap rounded-lg border px-3 py-2 text-sm font-medium transition"
+        [ngClass]="
+          tab === engineService.activeContextTab()
+            ? 'border-border-active bg-emerald/15 text-emerald'
+            : 'border-border-soft bg-bg-soft text-text-muted hover:border-cyan/50 hover:text-cyan'
+        "
+        (click)="engineService.setContextTab(tab)"
+      >
+        {{ tab }}
+      </button>
+    }
+  </div>
+
+  @if (engineService.activeContextTab() === 'Source Code') {
+    <section
+      class="mt-3 space-y-3"
+      role="tabpanel"
+      [id]="contextPanelId('Source Code')"
+      [attr.aria-labelledby]="contextTabId('Source Code')"
+    >
+      <app-code-block
+        [sample]="engineService.activeEngineContext().source"
+        [copyState]="engineService.copyState()"
+        (copyRequested)="engineService.copySourceCode()"
+      ></app-code-block>
+    </section>
+  }
+
+  @if (engineService.activeContextTab() === 'State') {
+    <section
+      class="mt-3 space-y-3"
+      role="tabpanel"
+      [id]="contextPanelId('State')"
+      [attr.aria-labelledby]="contextTabId('State')"
+    >
+      @for (note of engineService.activeEngineContext().stateNotes; track note.heading) {
+        <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+          <h3 class="text-sm font-semibold text-cyan">{{ note.heading }}</h3>
+          <ul class="mt-2 space-y-2 text-sm text-text-muted">
+            @for (point of note.points; track point) {
+              <li class="flex gap-2">
+                <span class="mt-1 h-1.5 w-1.5 rounded-full bg-cyan"></span>
+                <span>{{ point }}</span>
+              </li>
+            }
+          </ul>
+        </article>
+      }
+    </section>
+  }
+
+  @if (engineService.activeContextTab() === 'Architecture') {
+    <section
+      class="mt-3 space-y-3"
+      role="tabpanel"
+      [id]="contextPanelId('Architecture')"
+      [attr.aria-labelledby]="contextTabId('Architecture')"
+    >
+      @for (note of engineService.activeEngineContext().architectureNotes; track note.heading) {
+        <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+          <h3 class="text-sm font-semibold text-emerald">{{ note.heading }}</h3>
+          <ul class="mt-2 space-y-2 text-sm text-text-muted">
+            @for (point of note.points; track point) {
+              <li class="flex gap-2">
+                <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald"></span>
+                <span>{{ point }}</span>
+              </li>
+            }
+          </ul>
+        </article>
+      }
+    </section>
+  }
+
+  @if (engineService.activeContextTab() === 'Trade-offs') {
+    <section
+      class="mt-3 space-y-3"
+      role="tabpanel"
+      [id]="contextPanelId('Trade-offs')"
+      [attr.aria-labelledby]="contextTabId('Trade-offs')"
+    >
+      <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+        <h3 class="text-sm font-semibold text-emerald">Why {{ engineService.activeFramework() }}?</h3>
+        <ul class="mt-2 space-y-2 text-sm text-text-muted">
+          @for (strength of engineService.activeEngineContext().strengths; track strength) {
+            <li class="flex gap-2">
+              <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald"></span>
+              <span>{{ strength }}</span>
+            </li>
+          }
+        </ul>
+      </article>
+
+      <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+        <h3 class="text-sm font-semibold text-danger">Trade-offs</h3>
+        <ul class="mt-2 space-y-2 text-sm text-text-muted">
+          @for (tradeoff of engineService.activeEngineContext().tradeoffs; track tradeoff) {
+            <li class="flex gap-2">
+              <span class="mt-1 h-1.5 w-1.5 rounded-full bg-danger"></span>
+              <span>{{ tradeoff }}</span>
+            </li>
+          }
+        </ul>
+      </article>
+
+      <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+        <h3 class="text-sm font-semibold text-cyan">Compared Frameworks</h3>
+        <div class="mt-3 space-y-2">
+          @for (note of engineService.activeEngineContext().comparedFrameworkNotes; track note.framework) {
+            <div class="rounded-lg border border-border-soft bg-bg-main/65 px-3 py-2">
+              <p class="text-sm font-medium text-text-main">{{ note.framework }}</p>
+              <p class="mt-1 text-xs text-text-muted">{{ note.note }}</p>
+            </div>
+          }
+        </div>
+      </article>
+    </section>
+  }
+
+  <section class="mt-4 rounded-xl border border-border-soft bg-bg-soft/65 p-3.5">
+    <h3 class="text-sm font-semibold text-cyan">Source Shortcuts</h3>
+    <div class="mt-3 grid gap-2">
+      <a
+        class="rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan"
+        [href]="sourceLinks.angularWorkbench"
+        target="_blank"
+        rel="noopener"
+      >
+        View Angular Source
+      </a>
+      <a
+        class="rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan"
+        [href]="sourceLinks.reactEngine"
+        target="_blank"
+        rel="noopener"
+      >
+        View React Engine
+      </a>
+      <a
+        class="rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan"
+        [href]="sourceLinks.svelteEngine"
+        target="_blank"
+        rel="noopener"
+      >
+        View Svelte Engine
+      </a>
+      <a
+        class="rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan"
+        [href]="sourceLinks.dataModels"
+        target="_blank"
+        rel="noopener"
+      >
+        View Data Models
+      </a>
+      <a
+        class="rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan"
+        [href]="sourceLinks.caseStudies"
+        target="_blank"
+        rel="noopener"
+      >
+        View Case Study
+      </a>
+    </div>
+  </section>
+</aside>

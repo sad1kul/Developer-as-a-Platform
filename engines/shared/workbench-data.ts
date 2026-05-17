@@ -10,92 +10,107 @@ export interface WorkbenchItem {
   priority: WorkbenchPriority;
   updatedAt: string;
   updatedMinutesAgo: number;
+  category: string;
   description: string;
   techTags: string[];
 }
 
-// Kept in lockstep with the Angular workbench data. Extract to a package-level
-// shared data module later if the engine surface grows beyond this MVP.
 export const WORKBENCH_ITEMS: WorkbenchItem[] = [
   {
-    id: 1250,
-    name: 'Authentication Service',
+    id: 8601,
+    name: 'Travel Booking Workflow',
     status: 'Active',
     priority: 'High',
-    updatedAt: '2 min ago',
-    updatedMinutesAgo: 2,
-    description: 'Handles user authentication, JWT validation and session management.',
-    techTags: ['Angular', 'TypeScript', 'RxJS']
+    updatedAt: '4 min ago',
+    updatedMinutesAgo: 4,
+    category: 'CRM Operations',
+    description:
+      'Coordinates search, booking, and reservation steps inside a CRM-style workflow used for travel support operations.',
+    techTags: ['Angular', 'TypeScript', 'Angular Signals']
   },
   {
-    id: 1249,
-    name: 'User Profile Module',
+    id: 8602,
+    name: 'Customer Profile Lookup',
     status: 'Active',
     priority: 'Medium',
-    updatedAt: '15 min ago',
-    updatedMinutesAgo: 15,
-    description: 'Maintains profile settings, account preferences and update flows.',
-    techTags: ['Angular', 'Forms', 'REST']
+    updatedAt: '18 min ago',
+    updatedMinutesAgo: 18,
+    category: 'Support Workflow',
+    description:
+      'Represents a support workflow for finding customer details, linked service records, and recent booking context.',
+    techTags: ['Typed Models', 'Search UX', 'State Mapping']
   },
   {
-    id: 1248,
-    name: 'Payment Gateway Adapter',
+    id: 8603,
+    name: 'Transaction Dispute Queue',
     status: 'Pending',
     priority: 'High',
-    updatedAt: '32 min ago',
-    updatedMinutesAgo: 32,
-    description: 'Abstract adapter layer for payment provider integrations and retries.',
-    techTags: ['Node.js', 'API', 'Validation']
+    updatedAt: '37 min ago',
+    updatedMinutesAgo: 37,
+    category: 'Fintech Support',
+    description:
+      'Tracks disputed transactions that require support review, evidence collection, and escalation routing.',
+    techTags: ['Angular', 'Workflow Rules', 'Queue Logic']
   },
   {
-    id: 1247,
-    name: 'Notification Service',
+    id: 8604,
+    name: 'Proof-of-Payment Request',
     status: 'In Review',
-    priority: 'Low',
-    updatedAt: '1 hour ago',
-    updatedMinutesAgo: 60,
-    description: 'Coordinates in-app and email notifications using queue-safe rules.',
-    techTags: ['Queue', 'Node.js', 'Templates']
-  },
-  {
-    id: 1246,
-    name: 'Analytics Dashboard',
-    status: 'Error',
-    priority: 'Critical',
-    updatedAt: '2 hours ago',
-    updatedMinutesAgo: 120,
-    description: 'Monitors product-level metrics and failure patterns for debugging.',
-    techTags: ['Charts', 'Observability', 'Alerts']
-  },
-  {
-    id: 1245,
-    name: 'API Contract Monitor',
-    status: 'Warning',
-    priority: 'High',
-    updatedAt: '3 hours ago',
-    updatedMinutesAgo: 180,
-    description: 'Tracks schema drift and breaks between client contracts and APIs.',
-    techTags: ['OpenAPI', 'Testing', 'Automation']
-  },
-  {
-    id: 1244,
-    name: 'Error Tracking Service',
-    status: 'Pending',
     priority: 'Medium',
-    updatedAt: '5 hours ago',
-    updatedMinutesAgo: 300,
-    description: 'Groups production incidents with breadcrumbs and trace correlation.',
-    techTags: ['Tracing', 'Sourcemaps', 'Incidents']
+    updatedAt: '58 min ago',
+    updatedMinutesAgo: 58,
+    category: 'Fintech Operations',
+    description:
+      'Models a support action for requesting or generating transaction confirmation artifacts for customers and agents.',
+    techTags: ['Forms', 'Template UX', 'Service Patterns']
   },
   {
-    id: 1243,
-    name: 'Deployment Pipeline',
+    id: 8605,
+    name: 'AI Debug Session Monitor',
+    status: 'Warning',
+    priority: 'Critical',
+    updatedAt: '1 hour ago',
+    updatedMinutesAgo: 96,
+    category: 'Developer Tooling',
+    description:
+      'Represents a developer-tooling workflow for tracking runtime issues while pairing with AI-assisted debugging tools.',
+    techTags: ['Console Tracing', 'Runtime Signals', 'DevTools']
+  },
+  {
+    id: 8606,
+    name: 'API Contract Drift Checker',
+    status: 'Error',
+    priority: 'High',
+    updatedAt: '2 hours ago',
+    updatedMinutesAgo: 125,
+    category: 'Integration Quality',
+    description:
+      'Highlights frontend/backend contract mismatch risks between expected and actual API response payloads.',
+    techTags: ['TypeScript', 'Schema Contracts', 'Error Handling']
+  },
+  {
+    id: 8607,
+    name: 'Support Ticket Escalation Flow',
+    status: 'Pending',
+    priority: 'High',
+    updatedAt: '2 hours ago',
+    updatedMinutesAgo: 162,
+    category: 'Support Operations',
+    description:
+      'Models how support cases move from first-line review to technical escalation with clear ownership hand-off.',
+    techTags: ['Case Routing', 'Status Modeling', 'Audit Trail']
+  },
+  {
+    id: 8608,
+    name: 'CRM Reservation Flow',
     status: 'Active',
     priority: 'Medium',
-    updatedAt: '7 hours ago',
-    updatedMinutesAgo: 420,
-    description: 'Automates environment checks, deployment gates and rollback control.',
-    techTags: ['CI/CD', 'GitHub', 'Quality Gates']
+    updatedAt: '4 hours ago',
+    updatedMinutesAgo: 240,
+    category: 'CRM Workflow',
+    description:
+      'Represents reservation state changes across create, modify, and cancellation actions in an internal CRM dashboard.',
+    techTags: ['Angular Components', 'State Transitions', 'UI Architecture']
   }
 ];
 

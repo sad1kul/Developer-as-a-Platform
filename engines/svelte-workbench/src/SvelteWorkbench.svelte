@@ -15,13 +15,10 @@
     type WorkbenchStatus
   } from '../../shared/workbench-data';
 
-  type KpiTone = 'neutral' | 'positive' | 'warning' | 'danger';
-
   interface KpiMetric {
     label: string;
     value: string;
     caption: string;
-    tone: KpiTone;
   }
 
   let items = createWorkbenchItems();
@@ -29,7 +26,7 @@
   let statusFilter: StatusFilter = 'All Status';
   let sortBy: SortOption = 'Newest';
   let selectedItemId = items[0]?.id ?? 0;
-  let lastSimulated = 'Not simulated yet';
+  let lastSimulated = 'No simulation yet';
 
   $: filteredItems = filterAndSortItems(items, searchQuery, statusFilter, sortBy);
   $: selectedItem = filteredItems.find((item) => item.id === selectedItemId) ?? filteredItems[0] ?? items[0];
@@ -48,6 +45,7 @@
         term.length === 0 ||
         item.name.toLowerCase().includes(term) ||
         item.description.toLowerCase().includes(term) ||
+        item.category.toLowerCase().includes(term) ||
         item.techTags.some((tag) => tag.toLowerCase().includes(term)) ||
         item.id.toString().includes(term);
 
@@ -71,19 +69,16 @@
 
   function itemKpis(currentItems: WorkbenchItem[]): KpiMetric[] {
     const active = currentItems.filter((item) => item.status === 'Active').length;
-    const waiting = currentItems.filter((item) => item.status === 'Pending' || item.status === 'In Review').length;
-    const needsAttention = currentItems.filter((item) => item.status === 'Warning' || item.status === 'Error').length;
+    const needsAttention = currentItems.filter((item) => item.status !== 'Active').length;
+    const highPriority = currentItems.filter((item) => item.priority === 'High' || item.priority === 'Critical').length;
+    const errors = currentItems.filter((item) => item.status === 'Error').length;
 
     return [
-      { label: 'Demo Modules', value: currentItems.length.toLocaleString(), caption: 'Local mock rows', tone: 'neutral' },
-      { label: 'Active Rows', value: active.toLocaleString(), caption: 'Derived from mock data', tone: 'positive' },
-      { label: 'Waiting Rows', value: waiting.toLocaleString(), caption: 'Pending or in review', tone: 'warning' },
-      {
-        label: 'Needs Attention',
-        value: needsAttention.toLocaleString(),
-        caption: 'Warning or error rows',
-        tone: 'danger'
-      }
+      { label: 'Demo Modules', value: currentItems.length.toLocaleString(), caption: 'Computed from local demo data' },
+      { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active' },
+      { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active' },
+      { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical' },
+      { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error' }
     ];
   }
 
@@ -161,8 +156,13 @@
   <div class="toolbar">
     <div class="controls">
       <label class="control">
-        <span class="sr-only">Search modules</span>
-        <input aria-label="Search modules" type="search" placeholder="Search modules..." bind:value={searchQuery} />
+        <span class="sr-only">Search workflows</span>
+        <input
+          aria-label="Search workflows"
+          type="search"
+          placeholder="Search workflows, categories, or tags..."
+          bind:value={searchQuery}
+        />
       </label>
 
       <label class="control">
@@ -194,7 +194,7 @@
     <div>
       <div class="mobile-list">
         {#if filteredItems.length === 0}
-          <div class="empty-state">No modules match the current filters.</div>
+          <div class="empty-state">No workflows match the current filters.</div>
         {/if}
 
         {#each filteredItems as item (item.id)}
@@ -208,7 +208,7 @@
             <span class="mobile-topline">
               <span>
                 <span class="module-name">{item.name}</span>
-                <span class="module-id">#{item.id}</span>
+                <span class="module-id">#{item.id} · {item.category}</span>
               </span>
               <span class={statusClass(item.status)}>{item.status}</span>
             </span>
@@ -231,18 +231,19 @@
           <thead>
             <tr>
               <th style="width: 74px">ID</th>
-              <th style="width: 18%">Name</th>
-              <th style="width: 96px">Status</th>
-              <th style="width: 90px">Priority</th>
-              <th style="width: 86px">Updated</th>
-              <th>Description</th>
-              <th style="width: 22%">Tech tags</th>
+              <th style="width: 210px">Name</th>
+              <th style="width: 132px">Category</th>
+              <th style="width: 112px">Status</th>
+              <th style="width: 110px">Priority</th>
+              <th style="width: 110px">Updated</th>
+              <th style="width: 300px">Description</th>
+              <th style="width: 214px">Tech tags</th>
             </tr>
           </thead>
           <tbody>
             {#if filteredItems.length === 0}
               <tr>
-                <td class="empty-state-cell" colspan="7">No modules match the current filters.</td>
+                <td class="empty-state-cell" colspan="8">No workflows match the current filters.</td>
               </tr>
             {/if}
 
@@ -251,7 +252,7 @@
                 <td class="mono">#{item.id}</td>
                 <td>
                   <button
-                    aria-label={`Select module ${item.name}`}
+                    aria-label={`Select workflow ${item.name}`}
                     aria-pressed={item.id === selectedItem?.id}
                     class="name-button"
                     type="button"
@@ -263,6 +264,7 @@
                     {item.name}
                   </button>
                 </td>
+                <td>{item.category}</td>
                 <td><span class={statusClass(item.status)}>{item.status}</span></td>
                 <td><span class={priorityClass(item.priority)}>{item.priority}</span></td>
                 <td>{item.updatedAt}</td>
@@ -286,7 +288,7 @@
         <div class="detail-header">
           <div>
             <h3 class="detail-title">{selectedItem.name}</h3>
-            <span class="module-id">ID: #{selectedItem.id}</span>
+            <span class="module-id">ID: #{selectedItem.id} · {selectedItem.category}</span>
           </div>
           <span class={statusClass(selectedItem.status)}>{selectedItem.status}</span>
         </div>
@@ -315,7 +317,7 @@
     display: grid;
     gap: 1rem;
     color: #e5edf6;
-    font-family: "Space Grotesk", system-ui, sans-serif;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
   }
 
   .engine-status {
@@ -522,7 +524,7 @@
   .module-id {
     display: block;
     margin-top: 0.25rem;
-    font-family: "IBM Plex Mono", SFMono-Regular, Menlo, monospace;
+    font-family: 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
   }
 
   .mobile-meta {
@@ -552,15 +554,19 @@
     color: #e5edf6;
     padding: 0.25rem 0.45rem;
     font-size: 0.75rem;
+    white-space: nowrap;
   }
 
   .table-shell {
     display: none;
-    overflow: hidden;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   table {
     width: 100%;
+    min-width: 1240px;
     border-collapse: collapse;
     table-layout: fixed;
   }
@@ -575,16 +581,32 @@
     font-size: 0.75rem;
     font-weight: 600;
     letter-spacing: 0.08em;
+    line-height: 1.35;
     padding: 0.75rem;
     text-align: left;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   td {
     border-bottom: 1px solid rgba(28, 49, 73, 0.5);
     color: #91a5bf;
+    line-height: 1.5;
+    overflow-wrap: break-word;
     padding: 0.75rem;
     vertical-align: top;
+  }
+
+  td:nth-child(1),
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(5),
+  td:nth-child(6) {
+    white-space: nowrap;
+  }
+
+  td .tag-list {
+    margin-top: 0;
   }
 
   .empty-state-cell {
@@ -605,6 +627,8 @@
     border: 0;
     background: transparent;
     color: #e5edf6;
+    max-width: 100%;
+    overflow-wrap: break-word;
     padding: 0;
     text-align: left;
     transition: color 160ms ease;
@@ -615,7 +639,7 @@
   }
 
   .mono {
-    font-family: "IBM Plex Mono", SFMono-Regular, Menlo, monospace;
+    font-family: 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
     font-size: 0.75rem;
   }
 
@@ -663,10 +687,15 @@
     background: rgba(244, 111, 111, 0.22);
   }
 
+  .detail-card {
+    min-width: 0;
+  }
+
   .detail-title {
     margin: 0;
     color: #e5edf6;
     font-size: 1.125rem;
+    overflow-wrap: break-word;
   }
 
   .empty-state {
@@ -711,11 +740,7 @@
 
   @media (min-width: 1280px) {
     .kpi-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .engine-grid {
-      grid-template-columns: minmax(0, 1fr) 280px;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
     }
   }
 

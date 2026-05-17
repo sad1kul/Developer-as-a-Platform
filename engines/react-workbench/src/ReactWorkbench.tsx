@@ -14,13 +14,10 @@ import {
   WorkbenchStatus
 } from '../../shared/workbench-data';
 
-type KpiTone = 'neutral' | 'positive' | 'warning' | 'danger';
-
 interface KpiMetric {
   label: string;
   value: string;
   caption: string;
-  tone: KpiTone;
 }
 
 function statusClass(status: WorkbenchStatus): string {
@@ -59,6 +56,7 @@ function filterAndSortItems(
       term.length === 0 ||
       item.name.toLowerCase().includes(term) ||
       item.description.toLowerCase().includes(term) ||
+      item.category.toLowerCase().includes(term) ||
       item.techTags.some((tag) => tag.toLowerCase().includes(term)) ||
       item.id.toString().includes(term);
 
@@ -82,19 +80,16 @@ function filterAndSortItems(
 
 function itemKpis(items: WorkbenchItem[]): KpiMetric[] {
   const active = items.filter((item) => item.status === 'Active').length;
-  const waiting = items.filter((item) => item.status === 'Pending' || item.status === 'In Review').length;
-  const needsAttention = items.filter((item) => item.status === 'Warning' || item.status === 'Error').length;
+  const needsAttention = items.filter((item) => item.status !== 'Active').length;
+  const highPriority = items.filter((item) => item.priority === 'High' || item.priority === 'Critical').length;
+  const errors = items.filter((item) => item.status === 'Error').length;
 
   return [
-    { label: 'Demo Modules', value: items.length.toLocaleString(), caption: 'Local mock rows', tone: 'neutral' },
-    { label: 'Active Rows', value: active.toLocaleString(), caption: 'Derived from mock data', tone: 'positive' },
-    { label: 'Waiting Rows', value: waiting.toLocaleString(), caption: 'Pending or in review', tone: 'warning' },
-    {
-      label: 'Needs Attention',
-      value: needsAttention.toLocaleString(),
-      caption: 'Warning or error rows',
-      tone: 'danger'
-    }
+    { label: 'Demo Modules', value: items.length.toLocaleString(), caption: 'Computed from local demo data' },
+    { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active' },
+    { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active' },
+    { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical' },
+    { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error' }
   ];
 }
 
@@ -104,7 +99,7 @@ export function ReactWorkbench() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All Status');
   const [sortBy, setSortBy] = useState<SortOption>('Newest');
   const [selectedItemId, setSelectedItemId] = useState(items[0]?.id ?? 0);
-  const [lastSimulated, setLastSimulated] = useState('Not simulated yet');
+  const [lastSimulated, setLastSimulated] = useState('No simulation yet');
 
   const filteredItems = useMemo(
     () => filterAndSortItems(items, searchQuery, statusFilter, sortBy),
@@ -171,11 +166,11 @@ export function ReactWorkbench() {
       <div className="toolbar">
         <div className="controls">
           <label className="control">
-            <span className="sr-only">Search modules</span>
+            <span className="sr-only">Search workflows</span>
             <input
-              aria-label="Search modules"
+              aria-label="Search workflows"
               type="search"
-              placeholder="Search modules..."
+              placeholder="Search workflows, categories, or tags..."
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
@@ -217,7 +212,7 @@ export function ReactWorkbench() {
       <div className="engine-grid">
         <div>
           <div className="mobile-list">
-            {filteredItems.length === 0 ? <div className="empty-state">No modules match the current filters.</div> : null}
+            {filteredItems.length === 0 ? <div className="empty-state">No workflows match the current filters.</div> : null}
             {filteredItems.map((item) => (
               <button
                 aria-pressed={item.id === selectedItem?.id}
@@ -229,7 +224,9 @@ export function ReactWorkbench() {
                 <span className="mobile-topline">
                   <span>
                     <span className="module-name">{item.name}</span>
-                    <span className="module-id">#{item.id}</span>
+                    <span className="module-id">
+                      #{item.id} · {item.category}
+                    </span>
                   </span>
                   <span className={statusClass(item.status)}>{item.status}</span>
                 </span>
@@ -254,19 +251,20 @@ export function ReactWorkbench() {
               <thead>
                 <tr>
                   <th style={{ width: '74px' }}>ID</th>
-                  <th style={{ width: '18%' }}>Name</th>
-                  <th style={{ width: '96px' }}>Status</th>
-                  <th style={{ width: '90px' }}>Priority</th>
-                  <th style={{ width: '86px' }}>Updated</th>
-                  <th>Description</th>
-                  <th style={{ width: '22%' }}>Tech tags</th>
+                  <th style={{ width: '210px' }}>Name</th>
+                  <th style={{ width: '132px' }}>Category</th>
+                  <th style={{ width: '112px' }}>Status</th>
+                  <th style={{ width: '110px' }}>Priority</th>
+                  <th style={{ width: '110px' }}>Updated</th>
+                  <th style={{ width: '300px' }}>Description</th>
+                  <th style={{ width: '214px' }}>Tech tags</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredItems.length === 0 ? (
                   <tr>
-                    <td className="empty-state-cell" colSpan={7}>
-                      No modules match the current filters.
+                    <td className="empty-state-cell" colSpan={8}>
+                      No workflows match the current filters.
                     </td>
                   </tr>
                 ) : null}
@@ -279,7 +277,7 @@ export function ReactWorkbench() {
                     <td className="mono">#{item.id}</td>
                     <td>
                       <button
-                        aria-label={`Select module ${item.name}`}
+                        aria-label={`Select workflow ${item.name}`}
                         aria-pressed={item.id === selectedItem?.id}
                         className="name-button"
                         onClick={(event) => {
@@ -291,6 +289,7 @@ export function ReactWorkbench() {
                         {item.name}
                       </button>
                     </td>
+                    <td>{item.category}</td>
                     <td>
                       <span className={statusClass(item.status)}>{item.status}</span>
                     </td>
@@ -320,7 +319,9 @@ export function ReactWorkbench() {
             <div className="detail-header">
               <div>
                 <h3 className="detail-title">{selectedItem.name}</h3>
-                <span className="module-id">ID: #{selectedItem.id}</span>
+                <span className="module-id">
+                  ID: #{selectedItem.id} · {selectedItem.category}
+                </span>
               </div>
               <span className={statusClass(selectedItem.status)}>{selectedItem.status}</span>
             </div>
