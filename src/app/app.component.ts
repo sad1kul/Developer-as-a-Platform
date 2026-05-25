@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
 
 import {
   ABOUT_PARAGRAPHS,
@@ -65,6 +65,7 @@ export class AppComponent {
 
   readonly mobileMenuOpen = signal(false);
   readonly activeSection = signal<NavSectionId>('overview');
+  readonly cvModalOpen = signal(false);
 
   setActiveSection(section: NavSectionId): void {
     this.activeSection.set(section);
@@ -78,5 +79,16 @@ export class AppComponent {
   scrollToSection(section: NavSectionId): void {
     this.activeSection.set(section);
     document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    const anchor = target.closest('a');
+    
+    if (anchor && anchor.href && anchor.href.includes('Sadikul-Islam-CV.pdf')) {
+      event.preventDefault();
+      this.cvModalOpen.set(true);
+    }
   }
 }

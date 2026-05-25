@@ -1,4 +1,4 @@
-<svelte:options customElement={{ tag: 'svelte-data-workbench', shadow: 'open' }} />
+<svelte:options customElement={{ tag: 'svelte-data-workbench', shadow: 'none' }} />
 
 <script lang="ts">
   import {
@@ -19,6 +19,7 @@
     label: string;
     value: string;
     caption: string;
+    tone: 'neutral' | 'positive' | 'warning' | 'focus' | 'danger';
   }
 
   let items = createWorkbenchItems();
@@ -74,39 +75,16 @@
     const errors = currentItems.filter((item) => item.status === 'Error').length;
 
     return [
-      { label: 'Demo Modules', value: currentItems.length.toLocaleString(), caption: 'Computed from local demo data' },
-      { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active' },
-      { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active' },
-      { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical' },
-      { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error' }
+      { label: 'Demo Modules', value: currentItems.length.toLocaleString(), caption: 'Computed from local demo data', tone: 'neutral' },
+      { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active', tone: 'positive' },
+      { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active', tone: 'warning' },
+      { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical', tone: 'focus' },
+      { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error', tone: 'danger' }
     ];
   }
 
-  function statusClass(status: WorkbenchStatus): string {
-    const classMap: Record<WorkbenchStatus, string> = {
-      Active: 'status-active',
-      Pending: 'status-pending',
-      Warning: 'status-warning',
-      Error: 'status-error',
-      'In Review': 'status-in-review'
-    };
-
-    return `badge ${classMap[status]}`;
-  }
-
-  function priorityClass(priority: WorkbenchPriority): string {
-    const classMap: Record<WorkbenchPriority, string> = {
-      Low: 'priority-low',
-      Medium: 'priority-medium',
-      High: 'priority-high',
-      Critical: 'priority-critical'
-    };
-
-    return `badge ${classMap[priority]}`;
-  }
-
   function simulateUpdate(): void {
-    items = items.map((item) => {
+    const refreshed = items.map((item) => {
       const minuteShift = Math.floor(Math.random() * 10) + 1;
       const nextMinutesAgo = Math.max(1, item.updatedMinutesAgo - minuteShift);
 
@@ -118,6 +96,8 @@
       };
     });
 
+    items = refreshed;
+
     const simulatedAt = new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
       minute: '2-digit'
@@ -128,627 +108,237 @@
 
   function selectItem(item: WorkbenchItem): void {
     selectedItemId = item.id;
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent('workbench-select', {
+          detail: { engine: 'Svelte', id: item.id, name: item.name }
+        })
+      );
+    }
+  }
 
-    window.dispatchEvent(
-      new CustomEvent('workbench-select', {
-        detail: { engine: 'Svelte', id: item.id, name: item.name }
-      })
-    );
+  function statusClasses(status: WorkbenchStatus): string {
+    const classMap: Record<WorkbenchStatus, string> = {
+      Active: 'border-emerald/40 bg-emerald/15 text-emerald',
+      Pending: 'border-warning/40 bg-warning/15 text-warning',
+      Warning: 'border-warning/40 bg-warning/15 text-warning',
+      Error: 'border-danger/40 bg-danger/15 text-danger',
+      'In Review': 'border-cyan/40 bg-cyan/15 text-cyan'
+    };
+    return classMap[status];
+  }
+
+  function priorityClasses(priority: WorkbenchPriority): string {
+    const classMap: Record<WorkbenchPriority, string> = {
+      Low: 'border-cyan/35 bg-cyan/10 text-cyan',
+      Medium: 'border-warning/35 bg-warning/10 text-warning',
+      High: 'border-danger/35 bg-danger/10 text-danger',
+      Critical: 'border-danger/55 bg-danger/20 text-danger'
+    };
+    return classMap[priority];
+  }
+
+  function metricCaptionClass(tone: KpiMetric['tone']): string {
+    const classMap: Record<KpiMetric['tone'], string> = {
+      neutral: 'text-cyan',
+      positive: 'text-emerald',
+      warning: 'text-warning',
+      focus: 'text-purple',
+      danger: 'text-danger'
+    };
+    return classMap[tone];
   }
 </script>
 
-<section class="engine-shell" aria-label="Svelte data workbench">
-  <p class="engine-status">
-    <span class="engine-dot" aria-hidden="true"></span>
-    Svelte engine active
-  </p>
+<div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+  {#each kpiMetrics as metric (metric.label)}
+    <article class="rounded-xl border border-border-soft bg-bg-soft/70 p-3.5">
+      <p class="text-xs uppercase tracking-[0.1em] text-text-muted">{metric.label}</p>
+      <p class="mt-2 text-2xl font-semibold">{metric.value}</p>
+      <p class="mt-1 text-xs font-medium {metricCaptionClass(metric.tone)}">{metric.caption}</p>
+    </article>
+  {/each}
+</div>
 
-  <div class="kpi-grid">
-    {#each kpiMetrics as metric (metric.label)}
-      <article class="kpi-card">
-        <p class="kpi-label">{metric.label}</p>
-        <p class="kpi-value">{metric.value}</p>
-        <p class="kpi-caption">{metric.caption}</p>
-      </article>
-    {/each}
+<div class="mt-4 flex flex-col gap-3 rounded-xl border border-border-soft bg-bg-soft/60 p-3 lg:flex-row lg:items-center lg:justify-between">
+  <div class="grid flex-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+    <label class="relative block">
+      <span class="sr-only">Search modules</span>
+      <input
+        type="search"
+        class="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-cyan/60 focus:outline-none"
+        placeholder="Search workflows, categories, or tags..."
+        bind:value={searchQuery}
+      />
+    </label>
+
+    <label class="block">
+      <span class="sr-only">Filter by status</span>
+      <select
+        class="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main focus:border-cyan/60 focus:outline-none"
+        bind:value={statusFilter}
+      >
+        {#each STATUS_FILTERS as status}
+          <option value={status}>{status}</option>
+        {/each}
+      </select>
+    </label>
+
+    <label class="block">
+      <span class="sr-only">Sort rows</span>
+      <select
+        class="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main focus:border-cyan/60 focus:outline-none"
+        bind:value={sortBy}
+      >
+        {#each SORT_OPTIONS as option}
+          <option value={option}>Sort: {option}</option>
+        {/each}
+      </select>
+    </label>
   </div>
 
-  <div class="toolbar">
-    <div class="controls">
-      <label class="control">
-        <span class="sr-only">Search workflows</span>
-        <input
-          aria-label="Search workflows"
-          type="search"
-          placeholder="Search workflows, categories, or tags..."
-          bind:value={searchQuery}
-        />
-      </label>
+  <button
+    type="button"
+    class="inline-flex items-center justify-center gap-2 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan focus:outline-none"
+    on:click={simulateUpdate}
+  >
+    <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
+      <path d="M20 12a8 8 0 1 1-2.343-5.657M20 4v5h-5"></path>
+    </svg>
+    Simulate update
+    <span class="text-xs text-text-muted">{lastSimulated}</span>
+  </button>
+</div>
 
-      <label class="control">
-        <span class="sr-only">Filter by status</span>
-        <select aria-label="Filter by status" bind:value={statusFilter}>
-          {#each STATUS_FILTERS as status}
-            <option value={status}>{status}</option>
-          {/each}
-        </select>
-      </label>
+<div class="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:h-[500px]">
 
-      <label class="control">
-        <span class="sr-only">Sort rows</span>
-        <select aria-label="Sort rows" bind:value={sortBy}>
-          {#each SORT_OPTIONS as option}
-            <option value={option}>Sort: {option}</option>
-          {/each}
-        </select>
-      </label>
+  <!-- Left: list/table -->
+  <div class="flex flex-col min-w-0 flex-1 lg:h-full lg:overflow-hidden">
+
+    <!-- Mobile card list -->
+    <div class="space-y-3 md:hidden">
+      {#if filteredItems.length === 0}
+        <div class="rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted">
+          No workflows match the current filters.
+        </div>
+      {/if}
+      {#each filteredItems as item (item.id)}
+        <button
+          type="button"
+          class="w-full rounded-xl border p-4 text-left transition {item.id === selectedItem.id ? 'border-border-active bg-svelte/12 shadow-[inset_2px_0_0_0_rgba(255,62,0,0.85)]' : 'border-border-soft bg-bg-soft/60 hover:border-cyan/40'}"
+          on:click={() => selectItem(item)}
+        >
+          <span class="flex items-start justify-between gap-3">
+            <span>
+              <span class="block font-medium text-text-main">{item.name}</span>
+              <span class="mt-1 block font-mono text-xs text-text-muted">#{item.id} · {item.category}</span>
+            </span>
+            <span class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium {statusClasses(item.status)}">
+              {item.status}
+            </span>
+          </span>
+          <span class="mt-3 grid gap-2 text-xs text-text-muted">
+            <span>Priority: {item.priority}</span>
+            <span>Updated: {item.updatedAt}</span>
+          </span>
+          <span class="mt-3 block text-sm leading-relaxed text-text-muted">{item.description}</span>
+          <span class="mt-3 flex flex-wrap gap-2">
+            {#each item.techTags as tag}
+              <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                {tag}
+              </span>
+            {/each}
+          </span>
+        </button>
+      {/each}
     </div>
 
-    <button class="simulate-button" type="button" onclick={simulateUpdate}>
-      Simulate update
-      <span class="simulate-meta">{lastSimulated}</span>
-    </button>
-  </div>
-
-  <div class="engine-grid">
-    <div>
-      <div class="mobile-list">
+    <!-- Desktop table - ID, Name, Status, Updated only -->
+    <div class="hidden rounded-xl border border-border-soft bg-bg-soft/60 md:flex md:flex-col lg:flex-1 lg:overflow-hidden">
+      <!-- Table header -->
+      <div class="grid grid-cols-[74px_1fr_120px_120px] gap-4 border-b border-border-soft/80 bg-bg-main/50 px-3 py-2.5 text-xs font-medium uppercase tracking-[0.08em] text-text-muted">
+        <div>ID</div>
+        <div>Name</div>
+        <div>Status</div>
+        <div class="text-right">Updated</div>
+      </div>
+      <!-- Table body -->
+      <div class="flex flex-col lg:flex-1 lg:overflow-y-auto">
         {#if filteredItems.length === 0}
-          <div class="empty-state">No workflows match the current filters.</div>
+          <div class="px-4 py-8 text-center text-sm text-text-muted">
+            No workflows match the current filters.
+          </div>
         {/if}
-
         {#each filteredItems as item (item.id)}
-          <button
-            aria-pressed={item.id === selectedItem?.id}
-            class:selected={item.id === selectedItem?.id}
-            class="mobile-row"
-            type="button"
-            onclick={() => selectItem(item)}
+          <div
+            role="button"
+            tabindex="0"
+            class="grid grid-cols-[74px_1fr_120px_120px] cursor-pointer items-center gap-4 border-b border-border-soft/50 px-3 py-3 text-sm transition {item.id !== selectedItem.id ? 'hover:bg-bg-main/50' : ''}"
+            style={item.id === selectedItem.id ? "box-shadow: inset 2px 0 0 0 rgba(255, 62, 0, 0.85); background-color: rgba(255, 62, 0, 0.08);" : ""}
+            on:click={() => selectItem(item)}
+            on:keydown={(e) => { if(e.key === 'Enter') selectItem(item); }}
           >
-            <span class="mobile-topline">
-              <span>
-                <span class="module-name">{item.name}</span>
-                <span class="module-id">#{item.id} · {item.category}</span>
+            <div class="font-mono text-xs text-text-muted">#{item.id}</div>
+            <div class="min-w-0">
+              <span class="block font-medium text-text-main truncate">{item.name}</span>
+              <span class="block font-mono text-xs text-text-muted mt-0.5 truncate">{item.category}</span>
+            </div>
+            <div>
+              <span class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium {statusClasses(item.status)}">
+                {item.status}
               </span>
-              <span class={statusClass(item.status)}>{item.status}</span>
-            </span>
-            <span class="mobile-meta">
-              <span>Priority: {item.priority}</span>
-              <span>Updated: {item.updatedAt}</span>
-            </span>
-            <span class="description">{item.description}</span>
-            <span class="tag-list">
-              {#each item.techTags as tag}
-                <span class="tag">{tag}</span>
-              {/each}
-            </span>
-          </button>
+            </div>
+            <div class="text-right text-xs text-text-muted whitespace-nowrap">{item.updatedAt}</div>
+          </div>
         {/each}
       </div>
-
-      <div class="table-shell">
-        <table>
-          <thead>
-            <tr>
-              <th style="width: 74px">ID</th>
-              <th style="width: 210px">Name</th>
-              <th style="width: 132px">Category</th>
-              <th style="width: 112px">Status</th>
-              <th style="width: 110px">Priority</th>
-              <th style="width: 110px">Updated</th>
-              <th style="width: 300px">Description</th>
-              <th style="width: 214px">Tech tags</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#if filteredItems.length === 0}
-              <tr>
-                <td class="empty-state-cell" colspan="8">No workflows match the current filters.</td>
-              </tr>
-            {/if}
-
-            {#each filteredItems as item (item.id)}
-              <tr class:selected={item.id === selectedItem?.id} class="table-row" onclick={() => selectItem(item)}>
-                <td class="mono">#{item.id}</td>
-                <td>
-                  <button
-                    aria-label={`Select workflow ${item.name}`}
-                    aria-pressed={item.id === selectedItem?.id}
-                    class="name-button"
-                    type="button"
-                    onclick={(event) => {
-                      event.stopPropagation();
-                      selectItem(item);
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                </td>
-                <td>{item.category}</td>
-                <td><span class={statusClass(item.status)}>{item.status}</span></td>
-                <td><span class={priorityClass(item.priority)}>{item.priority}</span></td>
-                <td>{item.updatedAt}</td>
-                <td>{item.description}</td>
-                <td>
-                  <span class="tag-list">
-                    {#each item.techTags as tag}
-                      <span class="tag">{tag}</span>
-                    {/each}
-                  </span>
-                </td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
     </div>
-
-    {#if selectedItem}
-      <article class="detail-card">
-        <div class="detail-header">
-          <div>
-            <h3 class="detail-title">{selectedItem.name}</h3>
-            <span class="module-id">ID: #{selectedItem.id} · {selectedItem.category}</span>
-          </div>
-          <span class={statusClass(selectedItem.status)}>{selectedItem.status}</span>
-        </div>
-        <p class="description">{selectedItem.description}</p>
-        <div class="tag-list">
-          {#each selectedItem.techTags as tag}
-            <span class="tag">{tag}</span>
-          {/each}
-        </div>
-        <p class="description">Last update: {selectedItem.updatedAt}</p>
-      </article>
-    {/if}
   </div>
-</section>
 
-<style>
-  :host {
-    display: block;
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  .engine-shell {
-    display: grid;
-    gap: 1rem;
-    color: #e5edf6;
-    font-family: 'Space Grotesk', system-ui, sans-serif;
-  }
-
-  .engine-status {
-    display: inline-flex;
-    width: fit-content;
-    align-items: center;
-    gap: 0.5rem;
-    border: 1px solid rgba(33, 210, 138, 0.34);
-    border-radius: 0.5rem;
-    background: rgba(33, 210, 138, 0.1);
-    padding: 0.35rem 0.5rem;
-    color: #21d28a;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .engine-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: #21d28a;
-  }
-
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 0.75rem;
-  }
-
-  .kpi-card,
-  .toolbar,
-  .table-shell,
-  .detail-card,
-  .mobile-row {
-    border: 1px solid #1c3149;
-    border-radius: 0.75rem;
-    background: rgba(15, 32, 54, 0.7);
-  }
-
-  .kpi-card,
-  .detail-card {
-    padding: 0.875rem;
-  }
-
-  .kpi-label {
-    margin: 0;
-    color: #91a5bf;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .kpi-value {
-    margin: 0.45rem 0 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-
-  .kpi-caption {
-    margin: 0.2rem 0 0;
-    color: #47bfd9;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .toolbar {
-    display: grid;
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .controls {
-    display: grid;
-    gap: 0.5rem;
-  }
-
-  .control {
-    min-width: 0;
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  input,
-  select,
-  button {
-    font: inherit;
-  }
-
-  input,
-  select {
-    width: 100%;
-    border: 1px solid #1c3149;
-    border-radius: 0.5rem;
-    background: rgba(4, 10, 20, 0.72);
-    color: #e5edf6;
-    padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
-  }
-
-  input::placeholder {
-    color: #91a5bf;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  button:focus-visible,
-  input:focus-visible,
-  select:focus-visible {
-    outline: 2px solid rgba(71, 191, 217, 0.85);
-    outline-offset: 2px;
-  }
-
-  .simulate-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border: 1px solid #1c3149;
-    border-radius: 0.5rem;
-    background: rgba(4, 10, 20, 0.72);
-    color: #e5edf6;
-    padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
-    transition: border-color 160ms ease, color 160ms ease;
-  }
-
-  .simulate-button:hover {
-    border-color: rgba(71, 191, 217, 0.5);
-    color: #47bfd9;
-  }
-
-  .simulate-meta,
-  .module-id,
-  .mobile-meta,
-  .description {
-    color: #91a5bf;
-  }
-
-  .simulate-meta,
-  .module-id,
-  .mobile-meta {
-    font-size: 0.75rem;
-  }
-
-  .engine-grid {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .mobile-list {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .mobile-row {
-    width: 100%;
-    padding: 1rem;
-    color: inherit;
-    text-align: left;
-    transition: border-color 160ms ease, background 160ms ease;
-  }
-
-  .mobile-row:hover {
-    border-color: rgba(71, 191, 217, 0.4);
-  }
-
-  .mobile-row.selected,
-  .table-row.selected {
-    background: rgba(33, 210, 138, 0.12);
-    box-shadow: inset 2px 0 0 rgba(33, 210, 138, 0.85);
-  }
-
-  .mobile-topline,
-  .detail-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.75rem;
-  }
-
-  .mobile-topline,
-  .detail-header {
-    align-items: flex-start;
-  }
-
-  .module-name {
-    display: block;
-    color: #e5edf6;
-    font-weight: 600;
-  }
-
-  .module-id {
-    display: block;
-    margin-top: 0.25rem;
-    font-family: 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
-  }
-
-  .mobile-meta {
-    display: grid;
-    gap: 0.4rem;
-    margin-top: 0.75rem;
-  }
-
-  .description {
-    display: block;
-    margin: 0.75rem 0 0;
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
-
-  .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-    margin-top: 0.75rem;
-  }
-
-  .tag {
-    border: 1px solid #1c3149;
-    border-radius: 0.375rem;
-    background: rgba(4, 10, 20, 0.7);
-    color: #e5edf6;
-    padding: 0.25rem 0.45rem;
-    font-size: 0.75rem;
-    white-space: nowrap;
-  }
-
-  .table-shell {
-    display: none;
-    min-width: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
-    width: 100%;
-    min-width: 1240px;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  thead {
-    border-bottom: 1px solid rgba(28, 49, 73, 0.8);
-    background: rgba(4, 10, 20, 0.5);
-  }
-
-  th {
-    color: #91a5bf;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    line-height: 1.35;
-    padding: 0.75rem;
-    text-align: left;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  td {
-    border-bottom: 1px solid rgba(28, 49, 73, 0.5);
-    color: #91a5bf;
-    line-height: 1.5;
-    overflow-wrap: break-word;
-    padding: 0.75rem;
-    vertical-align: top;
-  }
-
-  td:nth-child(1),
-  td:nth-child(3),
-  td:nth-child(4),
-  td:nth-child(5),
-  td:nth-child(6) {
-    white-space: nowrap;
-  }
-
-  td .tag-list {
-    margin-top: 0;
-  }
-
-  .empty-state-cell {
-    color: #91a5bf;
-    padding: 2rem 1rem;
-    text-align: center;
-  }
-
-  .table-row {
-    transition: background 160ms ease;
-  }
-
-  .table-row:hover {
-    background: rgba(4, 10, 20, 0.5);
-  }
-
-  .name-button {
-    border: 0;
-    background: transparent;
-    color: #e5edf6;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    padding: 0;
-    text-align: left;
-    transition: color 160ms ease;
-  }
-
-  .name-button:hover {
-    color: #47bfd9;
-  }
-
-  .mono {
-    font-family: 'IBM Plex Mono', SFMono-Regular, Menlo, monospace;
-    font-size: 0.75rem;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    white-space: nowrap;
-    border: 1px solid;
-    border-radius: 999px;
-    padding: 0.125rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .status-active {
-    border-color: rgba(33, 210, 138, 0.4);
-    background: rgba(33, 210, 138, 0.15);
-    color: #21d28a;
-  }
-
-  .status-pending,
-  .status-warning,
-  .priority-medium {
-    border-color: rgba(231, 184, 90, 0.4);
-    background: rgba(231, 184, 90, 0.15);
-    color: #e7b85a;
-  }
-
-  .status-error,
-  .priority-high,
-  .priority-critical {
-    border-color: rgba(244, 111, 111, 0.45);
-    background: rgba(244, 111, 111, 0.15);
-    color: #f46f6f;
-  }
-
-  .status-in-review,
-  .priority-low {
-    border-color: rgba(71, 191, 217, 0.4);
-    background: rgba(71, 191, 217, 0.15);
-    color: #47bfd9;
-  }
-
-  .priority-critical {
-    background: rgba(244, 111, 111, 0.22);
-  }
-
-  .detail-card {
-    min-width: 0;
-  }
-
-  .detail-title {
-    margin: 0;
-    color: #e5edf6;
-    font-size: 1.125rem;
-    overflow-wrap: break-word;
-  }
-
-  .empty-state {
-    border: 1px solid #1c3149;
-    border-radius: 0.75rem;
-    background: rgba(15, 32, 54, 0.7);
-    color: #91a5bf;
-    padding: 2rem 1rem;
-    text-align: center;
-  }
-
-  @media (min-width: 640px) {
-    .kpi-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .controls {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 768px) {
-    .mobile-list {
-      display: none;
-    }
-
-    .table-shell {
-      display: block;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .toolbar {
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: center;
-    }
-
-    .controls {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1280px) {
-    .kpi-grid {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      transition-duration: 0.001ms !important;
-    }
-  }
-</style>
+  <!-- Right: detail panel (visible when a row is selected) -->
+  {#if selectedItem}
+    <aside class="w-full overflow-hidden rounded-xl border border-border-soft bg-bg-soft/70 lg:w-72 lg:flex-shrink-0 lg:h-full lg:overflow-y-auto">
+      <div class="h-0.5 w-full bg-[#FF3E00]"></div>
+      <div class="p-5">
+        <h3 class="text-lg font-semibold text-text-main">{selectedItem.name}</h3>
+
+        <div class="mt-2 flex items-center justify-between border-b border-border-soft pb-4 mb-5">
+          <span class="font-mono text-xs text-text-muted">ID: #{selectedItem.id}</span>
+          <span class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium {statusClasses(selectedItem.status)}">
+            {selectedItem.status}
+          </span>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Description</p>
+            <p class="text-sm leading-relaxed text-text-main">{selectedItem.description}</p>
+          </div>
+
+          <div>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Tech</p>
+            <div class="flex flex-wrap gap-2">
+              {#each selectedItem.techTags as tag}
+                <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                  {tag}
+                </span>
+              {/each}
+            </div>
+          </div>
+
+          <div>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Priority</p>
+            <span class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium {priorityClasses(selectedItem.priority)}">
+              {selectedItem.priority}
+            </span>
+          </div>
+
+          <div>
+            <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Last Update</p>
+            <p class="text-sm text-text-main">{selectedItem.updatedAt}</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  {/if}
+</div>

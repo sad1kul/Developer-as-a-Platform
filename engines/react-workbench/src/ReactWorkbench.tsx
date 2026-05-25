@@ -18,29 +18,42 @@ interface KpiMetric {
   label: string;
   value: string;
   caption: string;
+  tone: 'neutral' | 'positive' | 'warning' | 'focus' | 'danger';
 }
 
-function statusClass(status: WorkbenchStatus): string {
+function statusClasses(status: WorkbenchStatus): string {
   const classMap: Record<WorkbenchStatus, string> = {
-    Active: 'status-active',
-    Pending: 'status-pending',
-    Warning: 'status-warning',
-    Error: 'status-error',
-    'In Review': 'status-in-review'
+    Active: 'border-emerald/40 bg-emerald/15 text-emerald',
+    Pending: 'border-warning/40 bg-warning/15 text-warning',
+    Warning: 'border-warning/40 bg-warning/15 text-warning',
+    Error: 'border-danger/40 bg-danger/15 text-danger',
+    'In Review': 'border-cyan/40 bg-cyan/15 text-cyan'
   };
 
-  return `badge ${classMap[status]}`;
+  return classMap[status];
 }
 
-function priorityClass(priority: WorkbenchPriority): string {
+function priorityClasses(priority: WorkbenchPriority): string {
   const classMap: Record<WorkbenchPriority, string> = {
-    Low: 'priority-low',
-    Medium: 'priority-medium',
-    High: 'priority-high',
-    Critical: 'priority-critical'
+    Low: 'border-cyan/35 bg-cyan/10 text-cyan',
+    Medium: 'border-warning/35 bg-warning/10 text-warning',
+    High: 'border-danger/35 bg-danger/10 text-danger',
+    Critical: 'border-danger/55 bg-danger/20 text-danger'
   };
 
-  return `badge ${classMap[priority]}`;
+  return classMap[priority];
+}
+
+function metricCaptionClass(tone: KpiMetric['tone']): string {
+  const classMap: Record<KpiMetric['tone'], string> = {
+    neutral: 'text-cyan',
+    positive: 'text-emerald',
+    warning: 'text-warning',
+    focus: 'text-purple',
+    danger: 'text-danger'
+  };
+
+  return classMap[tone];
 }
 
 function filterAndSortItems(
@@ -85,12 +98,20 @@ function itemKpis(items: WorkbenchItem[]): KpiMetric[] {
   const errors = items.filter((item) => item.status === 'Error').length;
 
   return [
-    { label: 'Demo Modules', value: items.length.toLocaleString(), caption: 'Computed from local demo data' },
-    { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active' },
-    { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active' },
-    { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical' },
-    { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error' }
+    { label: 'Demo Modules', value: items.length.toLocaleString(), caption: 'Computed from local demo data', tone: 'neutral' },
+    { label: 'Active', value: active.toLocaleString(), caption: 'Status is Active', tone: 'positive' },
+    { label: 'Needs Attention', value: needsAttention.toLocaleString(), caption: 'Not currently Active', tone: 'warning' },
+    { label: 'High Priority', value: highPriority.toLocaleString(), caption: 'Priority High or Critical', tone: 'focus' },
+    { label: 'Errors', value: errors.toLocaleString(), caption: 'Status is Error', tone: 'danger' }
   ];
+}
+
+function StatusBadge({ label, classes }: { label: string; classes: string }) {
+  return (
+    <span className={`inline-flex rounded-full border px-2 py-0.5 text-xs font-medium ${classes}`}>
+      {label}
+    </span>
+  );
 }
 
 export function ReactWorkbench() {
@@ -147,97 +168,108 @@ export function ReactWorkbench() {
   }
 
   return (
-    <section className="engine-shell" aria-label="React data workbench">
-      <p className="engine-status">
-        <span className="engine-dot" aria-hidden="true" />
-        React engine active
-      </p>
-
-      <div className="kpi-grid">
+    <>
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         {kpiMetrics.map((metric) => (
-          <article className="kpi-card" key={metric.label}>
-            <p className="kpi-label">{metric.label}</p>
-            <p className="kpi-value">{metric.value}</p>
-            <p className="kpi-caption">{metric.caption}</p>
+          <article key={metric.label} className="rounded-xl border border-border-soft bg-bg-soft/70 p-3.5">
+            <p className="text-xs uppercase tracking-[0.1em] text-text-muted">{metric.label}</p>
+            <p className="mt-2 text-2xl font-semibold">{metric.value}</p>
+            <p className={`mt-1 text-xs font-medium ${metricCaptionClass(metric.tone)}`}>{metric.caption}</p>
           </article>
         ))}
       </div>
 
-      <div className="toolbar">
-        <div className="controls">
-          <label className="control">
-            <span className="sr-only">Search workflows</span>
+      <div className="mt-4 flex flex-col gap-3 rounded-xl border border-border-soft bg-bg-soft/60 p-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="grid flex-1 gap-2 sm:grid-cols-2 xl:grid-cols-3">
+          <label className="relative block">
+            <span className="sr-only">Search modules</span>
             <input
-              aria-label="Search workflows"
               type="search"
+              className="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-cyan/60 focus:outline-none"
               placeholder="Search workflows, categories, or tags..."
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </label>
 
-          <label className="control">
+          <label className="block">
             <span className="sr-only">Filter by status</span>
             <select
-              aria-label="Filter by status"
+              className="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main focus:border-cyan/60 focus:outline-none"
               value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
+              onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
             >
               {STATUS_FILTERS.map((status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
+                <option key={status} value={status}>{status}</option>
               ))}
             </select>
           </label>
 
-          <label className="control">
+          <label className="block">
             <span className="sr-only">Sort rows</span>
-            <select aria-label="Sort rows" value={sortBy} onChange={(event) => setSortBy(event.target.value as SortOption)}>
+            <select
+              className="w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main focus:border-cyan/60 focus:outline-none"
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+            >
               {SORT_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  Sort: {option}
-                </option>
+                <option key={option} value={option}>Sort: {option}</option>
               ))}
             </select>
           </label>
         </div>
 
-        <button className="simulate-button" type="button" onClick={simulateUpdate}>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan focus:outline-none"
+          onClick={simulateUpdate}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M20 12a8 8 0 1 1-2.343-5.657M20 4v5h-5"></path>
+          </svg>
           Simulate update
-          <span className="simulate-meta">{lastSimulated}</span>
+          <span className="text-xs text-text-muted">{lastSimulated}</span>
         </button>
       </div>
 
-      <div className="engine-grid">
-        <div>
-          <div className="mobile-list">
-            {filteredItems.length === 0 ? <div className="empty-state">No workflows match the current filters.</div> : null}
+      <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:h-[500px]">
+
+        {/* Left: list/table */}
+        <div className="flex flex-col min-w-0 flex-1 lg:h-full lg:overflow-hidden">
+
+          {/* Mobile card list */}
+          <div className="space-y-3 md:hidden">
+            {filteredItems.length === 0 && (
+              <div className="rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted">
+                No workflows match the current filters.
+              </div>
+            )}
             {filteredItems.map((item) => (
               <button
-                aria-pressed={item.id === selectedItem?.id}
-                className={`mobile-row ${item.id === selectedItem?.id ? 'selected' : ''}`}
                 key={item.id}
-                onClick={() => selectItem(item)}
                 type="button"
+                className={`w-full rounded-xl border p-4 text-left transition ${
+                  item.id === selectedItem.id
+                    ? 'border-border-active bg-cyan/12 shadow-[inset_2px_0_0_0_rgba(14,165,233,0.85)]'
+                    : 'border-border-soft bg-bg-soft/60 hover:border-cyan/40'
+                }`}
+                onClick={() => selectItem(item)}
               >
-                <span className="mobile-topline">
+                <span className="flex items-start justify-between gap-3">
                   <span>
-                    <span className="module-name">{item.name}</span>
-                    <span className="module-id">
-                      #{item.id} · {item.category}
-                    </span>
+                    <span className="block font-medium text-text-main">{item.name}</span>
+                    <span className="mt-1 block font-mono text-xs text-text-muted">#{item.id} · {item.category}</span>
                   </span>
-                  <span className={statusClass(item.status)}>{item.status}</span>
+                  <StatusBadge label={item.status} classes={statusClasses(item.status)} />
                 </span>
-                <span className="mobile-meta">
+                <span className="mt-3 grid gap-2 text-xs text-text-muted">
                   <span>Priority: {item.priority}</span>
                   <span>Updated: {item.updatedAt}</span>
                 </span>
-                <span className="description">{item.description}</span>
-                <span className="tag-list">
+                <span className="mt-3 block text-sm leading-relaxed text-text-muted">{item.description}</span>
+                <span className="mt-3 flex flex-wrap gap-2">
                   {item.techTags.map((tag) => (
-                    <span className="tag" key={tag}>
+                    <span key={tag} className="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
                       {tag}
                     </span>
                   ))}
@@ -246,97 +278,92 @@ export function ReactWorkbench() {
             ))}
           </div>
 
-          <div className="table-shell">
-            <table>
-              <thead>
-                <tr>
-                  <th style={{ width: '74px' }}>ID</th>
-                  <th style={{ width: '210px' }}>Name</th>
-                  <th style={{ width: '132px' }}>Category</th>
-                  <th style={{ width: '112px' }}>Status</th>
-                  <th style={{ width: '110px' }}>Priority</th>
-                  <th style={{ width: '110px' }}>Updated</th>
-                  <th style={{ width: '300px' }}>Description</th>
-                  <th style={{ width: '214px' }}>Tech tags</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredItems.length === 0 ? (
-                  <tr>
-                    <td className="empty-state-cell" colSpan={8}>
-                      No workflows match the current filters.
-                    </td>
-                  </tr>
-                ) : null}
-                {filteredItems.map((item) => (
-                  <tr
-                    className={`table-row ${item.id === selectedItem?.id ? 'selected' : ''}`}
-                    key={item.id}
-                    onClick={() => selectItem(item)}
-                  >
-                    <td className="mono">#{item.id}</td>
-                    <td>
-                      <button
-                        aria-label={`Select workflow ${item.name}`}
-                        aria-pressed={item.id === selectedItem?.id}
-                        className="name-button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          selectItem(item);
-                        }}
-                        type="button"
-                      >
-                        {item.name}
-                      </button>
-                    </td>
-                    <td>{item.category}</td>
-                    <td>
-                      <span className={statusClass(item.status)}>{item.status}</span>
-                    </td>
-                    <td>
-                      <span className={priorityClass(item.priority)}>{item.priority}</span>
-                    </td>
-                    <td>{item.updatedAt}</td>
-                    <td>{item.description}</td>
-                    <td>
-                      <span className="tag-list">
-                        {item.techTags.map((tag) => (
-                          <span className="tag" key={tag}>
-                            {tag}
-                          </span>
-                        ))}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {/* Desktop table - ID, Name, Status, Updated only */}
+          <div className="hidden rounded-xl border border-border-soft bg-bg-soft/60 md:flex md:flex-col lg:flex-1 lg:overflow-hidden">
+            {/* Table header */}
+            <div className="grid grid-cols-[74px_1fr_120px_120px] gap-4 border-b border-border-soft/80 bg-bg-main/50 px-3 py-2.5 text-xs font-medium uppercase tracking-[0.08em] text-text-muted">
+              <div>ID</div>
+              <div>Name</div>
+              <div>Status</div>
+              <div className="text-right">Updated</div>
+            </div>
+            {/* Table body */}
+            <div className="flex flex-col lg:flex-1 lg:overflow-y-auto">
+              {filteredItems.length === 0 && (
+                <div className="px-4 py-8 text-center text-sm text-text-muted">
+                  No workflows match the current filters.
+                </div>
+              )}
+              {filteredItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`grid grid-cols-[74px_1fr_120px_120px] cursor-pointer items-center gap-4 border-b border-border-soft/50 px-3 py-3 text-sm transition ${
+                    item.id !== selectedItem.id ? 'hover:bg-bg-main/50' : ''
+                  }`}
+                  style={item.id === selectedItem.id ? {
+                    boxShadow: 'inset 2px 0 0 0 rgba(14, 165, 233, 0.85)',
+                    backgroundColor: 'rgba(14, 165, 233, 0.08)'
+                  } : {}}
+                  onClick={() => selectItem(item)}
+                >
+                  <div className="font-mono text-xs text-text-muted">#{item.id}</div>
+                  <div className="min-w-0">
+                    <span className="block font-medium text-text-main truncate">{item.name}</span>
+                    <span className="block font-mono text-xs text-text-muted mt-0.5 truncate">{item.category}</span>
+                  </div>
+                  <div>
+                    <StatusBadge label={item.status} classes={statusClasses(item.status)} />
+                  </div>
+                  <div className="text-right text-xs text-text-muted whitespace-nowrap">{item.updatedAt}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {selectedItem ? (
-          <article className="detail-card">
-            <div className="detail-header">
-              <div>
-                <h3 className="detail-title">{selectedItem.name}</h3>
-                <span className="module-id">
-                  ID: #{selectedItem.id} · {selectedItem.category}
-                </span>
+        {/* Right: detail panel (visible when a row is selected) */}
+        {selectedItem && (
+          <aside className="w-full overflow-hidden rounded-xl border border-border-soft bg-bg-soft/70 lg:w-72 lg:flex-shrink-0 lg:h-full lg:overflow-y-auto">
+            <div className="h-0.5 w-full bg-[#0EA5E9]"></div>
+            <div className="p-5">
+              <h3 className="text-lg font-semibold text-text-main">{selectedItem.name}</h3>
+
+              <div className="mt-2 flex items-center justify-between border-b border-border-soft pb-4 mb-5">
+                <span className="font-mono text-xs text-text-muted">ID: #{selectedItem.id}</span>
+                <StatusBadge label={selectedItem.status} classes={statusClasses(selectedItem.status)} />
               </div>
-              <span className={statusClass(selectedItem.status)}>{selectedItem.status}</span>
+
+              <div className="space-y-5">
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Description</p>
+                  <p className="text-sm leading-relaxed text-text-main">{selectedItem.description}</p>
+                </div>
+
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Tech</p>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedItem.techTags.map((tag) => (
+                      <span key={tag} className="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Priority</p>
+                  <StatusBadge label={selectedItem.priority} classes={priorityClasses(selectedItem.priority)} />
+                </div>
+
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Last Update</p>
+                  <p className="text-sm text-text-main">{selectedItem.updatedAt}</p>
+                </div>
+              </div>
             </div>
-            <p className="description">{selectedItem.description}</p>
-            <div className="tag-list">
-              {selectedItem.techTags.map((tag) => (
-                <span className="tag" key={tag}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-            <p className="description">Last update: {selectedItem.updatedAt}</p>
-          </article>
-        ) : null}
+          </aside>
+        )}
       </div>
-    </section>
+    </>
   );
 }

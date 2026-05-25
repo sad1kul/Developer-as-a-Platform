@@ -1,6 +1,6 @@
 <app-section-card sectionId="workbench">
-  <div class="flex flex-wrap items-start justify-between gap-4">
-    <div>
+  <div class="flex items-start justify-between gap-4">
+    <div class="min-w-0">
       <h2 class="text-2xl font-semibold tracking-tight">Cross-Framework Workbench</h2>
       <p class="mt-1 text-sm text-text-muted">Same workflow data. Three frontend engines. Different state models.</p>
       <p class="mt-2 text-xs text-text-muted">{{ disclaimer }}</p>
@@ -9,23 +9,38 @@
       </p>
     </div>
 
-    <div class="flex flex-wrap items-center gap-2 text-sm">
-      <span class="text-text-muted">Engine:</span>
-      @for (engine of engines; track engine.name) {
-        <button
-          type="button"
-          class="rounded-lg border px-3 py-1.5 font-medium transition"
-          [ngClass]="
-            engine.name === engineService.activeFramework()
-              ? 'border-border-active bg-emerald/15 text-emerald'
-              : engine.available
-                ? 'border-border-soft bg-bg-soft text-text-main hover:border-cyan/40 hover:text-cyan'
-                : 'border-border-soft bg-bg-soft text-text-muted hover:border-border-soft'
-          "
-          (click)="setFramework(engine.name)"
+    <div class="flex flex-col items-end gap-3">
+      <div class="flex flex-shrink-0 flex-nowrap items-center justify-end gap-2 text-sm">
+        <span class="text-text-muted whitespace-nowrap">Engine:</span>
+        @for (engine of engines; track engine.name) {
+          <button
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-medium transition"
+            [ngClass]="engineButtonClasses(engine.name)"
+            (click)="setFramework(engine.name)"
+          >
+            @if (engine.name === 'Angular') {
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5L2 7l1.63 14.27L12 24l8.37-2.73L22 7z"/><path fill-opacity=".3" d="M12 2.5v21.5l8.37-2.73L22 7z"/><path fill="white" fill-opacity=".9" d="M12 7L7.5 17h1.75l.9-2.25h3.72L14.8 17h1.73L12 7zm0 2.85l1.43 3.65h-2.85L12 9.85z"/></svg>
+            }
+            @if (engine.name === 'React') {
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+            }
+            @if (engine.name === 'Svelte') {
+              <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            }
+            {{ engine.name }}
+          </button>
+        }
+      </div>
+
+      @if (engineService.activeFramework() !== 'Angular') {
+        <p
+          class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold"
+          [ngStyle]="{'border-color': activeEngineHex + '55', 'background-color': activeEngineHex + '1A', 'color': activeEngineHex}"
         >
-          {{ engine.name }}
-        </button>
+          <span class="h-2 w-2 rounded-full" [ngStyle]="{'background-color': activeEngineHex}"></span>
+          {{ engineService.activeFramework() }} engine active
+        </p>
       }
     </div>
   </div>
@@ -94,141 +109,131 @@
       </button>
     </div>
 
-    <div class="mt-4 grid gap-4">
-      <div class="space-y-3 md:hidden">
-        @if (workbenchState.filteredItems().length === 0) {
-          <div class="rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted">
-            No workflows match the current filters.
-          </div>
-        }
-        @for (item of workbenchState.filteredItems(); track item.id) {
-          <button
-            type="button"
-            class="w-full rounded-xl border p-4 text-left transition"
-            [ngClass]="
-              item.id === workbenchState.selectedItem().id
-                ? 'border-border-active bg-emerald/12 shadow-[inset_2px_0_0_0_rgba(33,210,138,0.85)]'
-                : 'border-border-soft bg-bg-soft/60 hover:border-cyan/40'
-            "
-            (click)="workbenchState.selectItem(item.id)"
-          >
-            <span class="flex items-start justify-between gap-3">
-              <span>
-                <span class="block font-medium text-text-main">{{ item.name }}</span>
-                <span class="mt-1 block font-mono text-xs text-text-muted">#{{ item.id }} · {{ item.category }}</span>
-              </span>
-              <app-status-badge [label]="item.status" [classes]="workbenchState.statusClasses(item.status)"></app-status-badge>
-            </span>
+    <div class="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:h-[500px]">
 
-            <span class="mt-3 grid gap-2 text-xs text-text-muted">
-              <span>Priority: {{ item.priority }}</span>
-              <span>Updated: {{ item.updatedAt }}</span>
-            </span>
+      <!-- Left: list/table -->
+      <div class="flex flex-col min-w-0 flex-1 lg:h-full lg:overflow-hidden">
 
-            <span class="mt-3 block text-sm leading-relaxed text-text-muted">{{ item.description }}</span>
-
-            <span class="mt-3 flex flex-wrap gap-2">
-              @for (tag of item.techTags; track tag) {
-                <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
-                  {{ tag }}
+        <!-- Mobile card list -->
+        <div class="space-y-3 md:hidden">
+          @if (workbenchState.filteredItems().length === 0) {
+            <div class="rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted">
+              No workflows match the current filters.
+            </div>
+          }
+          @for (item of workbenchState.filteredItems(); track item.id) {
+            <button
+              type="button"
+              class="w-full rounded-xl border p-4 text-left transition"
+              [ngClass]="
+                item.id === workbenchState.selectedItem().id
+                  ? 'border-border-active bg-emerald/12 shadow-[inset_2px_0_0_0_rgba(33,210,138,0.85)]'
+                  : 'border-border-soft bg-bg-soft/60 hover:border-cyan/40'
+              "
+              (click)="workbenchState.selectItem(item.id)"
+            >
+              <span class="flex items-start justify-between gap-3">
+                <span>
+                  <span class="block font-medium text-text-main">{{ item.name }}</span>
+                  <span class="mt-1 block font-mono text-xs text-text-muted">#{{ item.id }} · {{ item.category }}</span>
                 </span>
-              }
-            </span>
-          </button>
-        }
+                <app-status-badge [label]="item.status" [classes]="workbenchState.statusClasses(item.status)"></app-status-badge>
+              </span>
+              <span class="mt-3 grid gap-2 text-xs text-text-muted">
+                <span>Priority: {{ item.priority }}</span>
+                <span>Updated: {{ item.updatedAt }}</span>
+              </span>
+              <span class="mt-3 block text-sm leading-relaxed text-text-muted">{{ item.description }}</span>
+              <span class="mt-3 flex flex-wrap gap-2">
+                @for (tag of item.techTags; track tag) {
+                  <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                    {{ tag }}
+                  </span>
+                }
+              </span>
+            </button>
+          }
       </div>
 
-      <div class="hidden overflow-x-auto rounded-xl border border-border-soft bg-bg-soft/60 md:block">
-        <div>
-          <table class="min-w-[1240px] w-full table-fixed text-left text-sm">
-            <thead class="border-b border-border-soft/80 bg-bg-main/50 text-xs uppercase tracking-[0.08em] text-text-muted">
-              <tr>
-                <th class="w-[74px] whitespace-nowrap px-3 py-3 font-medium">ID</th>
-                <th class="w-[210px] whitespace-nowrap px-3 py-3 font-medium">Name</th>
-                <th class="w-[132px] whitespace-nowrap px-3 py-3 font-medium">Category</th>
-                <th class="w-[112px] whitespace-nowrap px-3 py-3 font-medium">Status</th>
-                <th class="w-[110px] whitespace-nowrap px-3 py-3 font-medium">Priority</th>
-                <th class="w-[110px] whitespace-nowrap px-3 py-3 font-medium">Updated</th>
-                <th class="w-[300px] whitespace-nowrap px-3 py-3 font-medium">Description</th>
-                <th class="w-[214px] whitespace-nowrap px-3 py-3 font-medium">Tech tags</th>
-              </tr>
-            </thead>
-            <tbody>
-              @if (workbenchState.filteredItems().length === 0) {
-                <tr>
-                  <td colspan="8" class="px-4 py-8 text-center text-text-muted">
-                    No workflows match the current filters.
-                  </td>
-                </tr>
-              }
-              @for (item of workbenchState.filteredItems(); track item.id) {
-                <tr
-                  class="cursor-pointer border-b border-border-soft/50 transition"
-                  [ngClass]="
-                    item.id === workbenchState.selectedItem().id
-                      ? 'bg-emerald/12 shadow-[inset_2px_0_0_0_rgba(33,210,138,0.85)]'
-                      : 'hover:bg-bg-main/50'
-                  "
-                  (click)="workbenchState.selectItem(item.id)"
-                >
-                  <td class="whitespace-nowrap px-3 py-3 align-top font-mono text-xs text-text-muted">#{{ item.id }}</td>
-                  <td class="px-3 py-3 align-top">
-                    <button
-                      type="button"
-                      class="block max-w-full break-words text-left font-medium text-text-main transition hover:text-cyan"
-                      [attr.aria-label]="'Select workflow ' + item.name"
-                      (click)="workbenchState.selectItem(item.id); $event.stopPropagation()"
-                    >
-                      {{ item.name }}
-                    </button>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-3 align-top text-text-muted">{{ item.category }}</td>
-                  <td class="whitespace-nowrap px-3 py-3 align-top">
-                    <app-status-badge [label]="item.status" [classes]="workbenchState.statusClasses(item.status)"></app-status-badge>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-3 align-top">
-                    <app-status-badge [label]="item.priority" [classes]="workbenchState.priorityClasses(item.priority)"></app-status-badge>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-3 align-top text-text-muted">{{ item.updatedAt }}</td>
-                  <td class="px-3 py-3 align-top leading-relaxed text-text-muted">{{ item.description }}</td>
-                  <td class="px-3 py-3 align-top">
-                    <div class="flex flex-wrap gap-1.5">
-                      @for (tag of item.techTags; track tag) {
-                        <span class="whitespace-nowrap rounded-md border border-border-soft bg-bg-main/70 px-1.5 py-0.5 text-[11px] text-text-main">
-                          {{ tag }}
-                        </span>
-                      }
-                    </div>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
+        <!-- Desktop table - ID, Name, Status, Updated only -->
+        <div class="hidden rounded-xl border border-border-soft bg-bg-soft/60 md:flex md:flex-col lg:flex-1 lg:overflow-hidden">
+          <!-- Table header -->
+          <div class="grid grid-cols-[74px_1fr_120px_120px] gap-4 border-b border-border-soft/80 bg-bg-main/50 px-3 py-2.5 text-xs font-medium uppercase tracking-[0.08em] text-text-muted">
+            <div>ID</div>
+            <div>Name</div>
+            <div>Status</div>
+            <div class="text-right">Updated</div>
+          </div>
+          <!-- Table body -->
+          <div class="flex flex-col lg:flex-1 lg:overflow-y-auto">
+            @if (workbenchState.filteredItems().length === 0) {
+              <div class="px-4 py-8 text-center text-sm text-text-muted">
+                No workflows match the current filters.
+              </div>
+            }
+            @for (item of workbenchState.filteredItems(); track item.id) {
+              <div
+                class="grid grid-cols-[74px_1fr_120px_120px] cursor-pointer items-center gap-4 border-b border-border-soft/50 px-3 py-3 text-sm transition"
+                [ngClass]="item.id !== workbenchState.selectedItem().id ? 'hover:bg-bg-main/50' : ''"
+                [ngStyle]="selectedRowStyle(item.id)"
+                (click)="workbenchState.selectItem(item.id)"
+              >
+                <div class="font-mono text-xs text-text-muted">#{{ item.id }}</div>
+                <div class="min-w-0">
+                  <span class="block font-medium text-text-main truncate">{{ item.name }}</span>
+                  <span class="block font-mono text-xs text-text-muted mt-0.5 truncate">{{ item.category }}</span>
+                </div>
+                <div>
+                  <app-status-badge [label]="item.status" [classes]="workbenchState.statusClasses(item.status)"></app-status-badge>
+                </div>
+                <div class="text-right text-xs text-text-muted whitespace-nowrap">{{ item.updatedAt }}</div>
+              </div>
+            }
+          </div>
         </div>
       </div>
 
+      <!-- Right: detail panel (visible when a row is selected) -->
       @if (workbenchState.selectedItem(); as selected) {
-        <article class="rounded-xl border border-border-soft bg-bg-soft/70 p-4">
-          <div class="flex items-start justify-between gap-3">
-            <div>
-              <h3 class="text-lg font-semibold">{{ selected.name }}</h3>
-              <p class="mt-1 font-mono text-xs text-text-muted">ID: #{{ selected.id }} · {{ selected.category }}</p>
+        <aside class="w-full overflow-hidden rounded-xl border border-border-soft bg-bg-soft/70 lg:w-72 lg:flex-shrink-0 lg:h-full lg:overflow-y-auto">
+          <div class="h-0.5 w-full" [ngStyle]="{'background-color': activeEngineHex}"></div>
+          <div class="p-5">
+            <h3 class="text-lg font-semibold text-text-main">{{ selected.name }}</h3>
+
+            <div class="mt-2 flex items-center justify-between border-b border-border-soft pb-4 mb-5">
+              <span class="font-mono text-xs text-text-muted">ID: #{{ selected.id }}</span>
+              <app-status-badge [label]="selected.status" [classes]="workbenchState.statusClasses(selected.status)"></app-status-badge>
             </div>
-            <app-status-badge [label]="selected.status" [classes]="workbenchState.statusClasses(selected.status)"></app-status-badge>
+
+            <div class="space-y-5">
+              <div>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Description</p>
+                <p class="text-sm leading-relaxed text-text-main">{{ selected.description }}</p>
+              </div>
+
+              <div>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Tech</p>
+                <div class="flex flex-wrap gap-2">
+                  @for (tag of selected.techTags; track tag) {
+                    <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
+                      {{ tag }}
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <div>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Priority</p>
+                <app-status-badge [label]="selected.priority" [classes]="workbenchState.priorityClasses(selected.priority)"></app-status-badge>
+              </div>
+
+              <div>
+                <p class="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Last Update</p>
+                <p class="text-sm text-text-main">{{ selected.updatedAt }}</p>
+              </div>
+            </div>
           </div>
-
-          <p class="mt-4 text-sm leading-relaxed text-text-muted">{{ selected.description }}</p>
-
-          <div class="mt-4 flex flex-wrap gap-2">
-            @for (tag of selected.techTags; track tag) {
-              <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main">
-                {{ tag }}
-              </span>
-            }
-          </div>
-
-          <p class="mt-4 text-xs text-text-muted">Last update: {{ selected.updatedAt }}</p>
-        </article>
+        </aside>
       }
     </div>
   } @else {

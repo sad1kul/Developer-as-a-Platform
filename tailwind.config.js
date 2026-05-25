@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/**/*.{html,ts}'],
+  content: ['./src/**/*.{html,ts}', './engines/**/*.{tsx,svelte,ts}'],
   theme: {
     extend: {
       colors: {
@@ -27,6 +27,7 @@ module.exports = {
         emerald: '#10B981',
         cyan: '#0EA5E9',
         purple: '#8B5CF6',
+        svelte: '#FF3E00',
         warning: '#F59E0B',
         danger: '#EF4444'
       },

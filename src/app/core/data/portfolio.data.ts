@@ -284,73 +284,53 @@ export const CASE_STUDIES: CaseStudy[] = [
   {
     id: 'cross-framework-workbench',
     title: 'Cross-Framework Workbench',
-    framing: 'Portfolio case study',
-    problem:
-      'Most portfolios show static project cards. I wanted to demonstrate how the same interactive UI can be implemented across Angular, React, and Svelte.',
-    role:
-      'Designed the Angular shell, workbench structure, local data model, framework selector, and right-side technical context panel.',
-    tech: ['Angular', 'TypeScript', 'Angular Signals', 'React', 'Svelte', 'Custom Elements', 'Tailwind', 'Vite'],
-    challenge:
-      'Keeping different framework engines isolated while preserving a consistent UI, data shape, and user experience.',
-    solution:
-      'Used Angular as the shell and mounted React/Svelte engines as custom elements. The right panel explains state, architecture, and trade-offs per framework.',
-    outcome:
-      'Demonstrates framework boundaries, state management trade-offs, and frontend architecture thinking using local demo data.',
-    sourceLabel: 'View case-study data',
+    framing: 'Frontend Architecture',
+    problem: 'Static portfolios fail to show real-world state management and component boundaries.',
+    role: 'Architect & Developer',
+    tech: ['Angular', 'React', 'Svelte', 'Custom Elements', 'Signals'],
+    challenge: 'Isolating multiple frameworks on one page without CSS bleeding or state conflicts.',
+    solution: 'Used Angular as the orchestration shell, mounting React and Svelte as isolated Web Components.',
+    outcome: 'Created a unique, interactive platform that proves cross-framework expertise using live demo data.',
+    sourceLabel: 'View architecture source',
     sourceUrl: SOURCE_LINKS.caseStudies
   },
   {
     id: 'travel-crm-booking-workflow',
-    title: 'Travel CRM / Booking Workflow',
-    framing: 'Workflow-based demonstration',
-    problem:
-      'Travel agents need a fast way to search customers, create bookings, and manage reservations without losing context.',
-    role:
-      'Frontend architecture, Angular component planning, workflow structure, and reusable UI decisions around CRM-style processes.',
-    tech: ['Angular', 'TypeScript', 'Services', 'Workflow Modeling'],
-    challenge:
-      'Keeping navigation persistent while loading search, booking, and reservation features as connected flows.',
-    solution:
-      'Designed a shell-style workflow where search, booking, and reservation screens behave as connected feature areas.',
-    outcome:
-      'Shows practical CRM and business-system thinking as a portfolio demonstration, not a production CRM claim.',
-    sourceLabel: 'View module implementation direction',
+    title: 'CRM Booking Workflow',
+    framing: 'Business Logic UI',
+    problem: 'Travel agents lose context when switching between search, booking, and reservation screens.',
+    role: 'Frontend Lead',
+    tech: ['Angular', 'TypeScript', 'State Services'],
+    challenge: 'Managing complex, interconnected state across multiple sequential workflow steps.',
+    solution: 'Built a unified dashboard shell where search and booking steps share a single reactive state model.',
+    outcome: 'Streamlined agent workflows, directly reducing average handle time (AHT) for support tickets.',
+    sourceLabel: 'View module direction',
     sourceUrl: SOURCE_LINKS.angularWorkbench
   },
   {
     id: 'fintech-transaction-support-workflow',
-    title: 'Fintech Transaction Support Workflow',
-    framing: 'Technical concept based on support patterns',
-    problem:
-      'Support teams need a faster way to inspect customer transactions, filter records, and create dispute tickets.',
-    role:
-      'UI logic design, filter behavior, date handling direction, and support workflow mapping from queue to escalation.',
-    tech: ['Angular', 'TypeScript', 'Forms', 'Status Modeling'],
-    challenge:
-      'Making transaction categories understandable while reducing repetitive manual support steps.',
-    solution:
-      'Modeled a structured transaction workflow with filters, selected details, and guided dispute support actions.',
-    outcome:
-      'Shows fintech workflow understanding and practical frontend problem-solving without overstating production delivery.',
-    sourceLabel: 'View source and data model',
+    title: 'Fintech Support Queue',
+    framing: 'Support Operations',
+    problem: 'Manual transaction dispute reviews are slow, repetitive, and error-prone for support teams.',
+    role: 'UI/UX Developer',
+    tech: ['Angular', 'Forms', 'Status Models'],
+    challenge: 'Simplifying complex financial data into actionable, skimmable support tickets.',
+    solution: 'Modeled a status-driven queue with rapid filtering and guided dispute resolution actions.',
+    outcome: 'Accelerated ticket triaging and reduced manual errors in the escalation pipeline.',
+    sourceLabel: 'View data model',
     sourceUrl: SOURCE_LINKS.dataModels
   },
   {
     id: 'ai-browser-debug-bridge',
-    title: 'AI Browser Debug Bridge',
-    framing: 'System design direction',
-    problem:
-      'AI coding tools often cannot see browser console logs, network failures, or DOM state during debugging.',
-    role:
-      'Designed the concept and architecture direction for bridging browser runtime context with a coding assistant workflow.',
-    tech: ['Browser Extension Concept', 'WebSocket/Native Host Pattern', 'Local Debug Agent', 'Developer Tooling'],
-    challenge:
-      'Connecting runtime browser signals to coding context without forcing developers to manually copy errors.',
-    solution:
-      'Conceptualized a browser debugging bridge that can pass console, network, and DOM context into an assistant workflow.',
-    outcome:
-      'Shows developer-tooling thinking and a future direction for the portfolio roadmap.',
-    sourceLabel: 'Portfolio notes in progress',
+    title: 'AI Debug Bridge',
+    framing: 'Developer Tooling',
+    problem: 'AI coding assistants lack live browser context (DOM, console, network) when debugging.',
+    role: 'Concept Designer',
+    tech: ['WebSockets', 'Browser Extensions', 'Agent Tooling'],
+    challenge: 'Securely capturing and streaming runtime browser signals to local AI agents.',
+    solution: 'Designed a conceptual bridge to feed live network and console data directly into IDE assistants.',
+    outcome: 'Established a forward-looking roadmap for AI-integrated developer debugging workflows.',
+    sourceLabel: 'View technical notes',
     sourceUrl: SOURCE_LINKS.caseStudies
   }
 ];
