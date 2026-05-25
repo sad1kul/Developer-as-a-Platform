@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run build:engines && ng serve",
+    "prebuild": "node scripts/update-status.js",
     "build": "npm run build:engines && ng build",
     "build:app": "ng build",
     "build:react-engine": "vite build --config engines/react-workbench/vite.config.mts",

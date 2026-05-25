@@ -84,7 +84,7 @@ export const SOURCE_LINKS: SourceLinks = {
 
 export const SYSTEM_STATUS: SystemStatusInfo = {
   live: 'Live: sadikul.me',
-  lastUpdated: 'Last updated: May 2026',
+  lastUpdated: 'Last updated: May 26, 2026, 12:17 AM GMT+6',
   version: 'Version: v1.0.0'
 };
 
