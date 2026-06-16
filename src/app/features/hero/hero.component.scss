@@ -1,0 +1,189 @@
+:host {
+  display: block;
+}
+
+.hero {
+  @apply relative;
+}
+
+.hero__grid {
+  @apply grid items-start gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-10;
+}
+
+.hero__intro {
+  @apply min-w-0;
+}
+
+.hero__eyebrow {
+  @apply mb-2 text-lg text-portfolio-muted;
+}
+
+.hero__name {
+  @apply mb-4 text-4xl font-bold tracking-tight text-portfolio-text md:text-5xl;
+}
+
+.hero__role-line {
+  @apply mb-6 flex flex-wrap items-center gap-2 text-sm text-portfolio-muted;
+}
+
+.hero__role-title {
+  @apply font-medium text-portfolio-accent;
+}
+
+.hero__role-separator {
+  @apply px-2;
+}
+
+.hero__summary {
+  @apply mb-8 max-w-xl text-base leading-relaxed text-portfolio-muted;
+}
+
+.hero__actions {
+  @apply flex flex-wrap items-center gap-4;
+}
+
+.hero-action {
+  @apply flex items-center rounded-md px-5 py-2.5 font-medium transition-colors;
+}
+
+.hero-action--primary {
+  @apply bg-portfolio-accent text-portfolio-bg hover:bg-portfolio-accent/90;
+}
+
+.hero-action--secondary {
+  @apply border border-portfolio-border bg-portfolio-panel hover:border-portfolio-text;
+}
+
+.hero-action__icon {
+  @apply ml-2;
+}
+
+.hero-flip {
+  @apply h-[360px] w-full cursor-pointer sm:h-[380px];
+  perspective: 1000px;
+}
+
+.hero-flip__inner {
+  @apply relative h-full w-full transition-transform duration-700 ease-in-out;
+  transform-style: preserve-3d;
+}
+
+.hero-flip__face {
+  @apply absolute inset-0 h-full w-full overflow-hidden rounded-xl border border-portfolio-border bg-portfolio-panel shadow-lg;
+  backface-visibility: hidden;
+}
+
+.hero-flip__face--front {
+  @apply flex items-center justify-center p-3;
+}
+
+.hero-flip__face--back {
+  @apply p-5;
+  transform: rotateY(180deg);
+}
+
+.hero-flip__image {
+  @apply h-full w-full rounded-lg object-contain;
+}
+
+.hero-flip__glow {
+  @apply pointer-events-none absolute inset-0 bg-gradient-to-br from-portfolio-accent/5 to-transparent opacity-0 transition-opacity duration-500;
+}
+
+.hero-flip:hover .hero-flip__glow {
+  @apply opacity-100;
+}
+
+.hero-flip__inner.is-rotated {
+  transform: rotateY(180deg);
+}
+
+.hero-terminal-panel {
+  height: 100%;
+  container-type: size;
+}
+
+.hero-terminal__header {
+  @apply mb-4 flex items-center gap-2 border-b border-portfolio-border/50 pb-4;
+}
+
+.hero-terminal__dot {
+  @apply h-3 w-3 rounded-full bg-portfolio-border;
+}
+
+.hero-terminal__path {
+  @apply font-mono text-portfolio-muted;
+  font-size: clamp(0.75rem, min(2.3cqi, 3.8cqb), 0.875rem);
+}
+
+.hero-terminal {
+  @apply space-y-3 font-mono;
+  font-size: clamp(0.72rem, min(2.3cqi, 3.75cqb), 0.9rem);
+  line-height: 1.45;
+}
+
+.hero-terminal__row {
+  @apply grid items-start;
+  column-gap: clamp(0.5rem, 1.8cqi, 0.75rem);
+  grid-template-columns: 1em max-content minmax(0, 1fr);
+}
+
+.hero-terminal__row--cursor {
+  @apply h-4 items-center;
+}
+
+.hero-terminal__prompt {
+  @apply text-portfolio-accent;
+}
+
+.hero-terminal__key {
+  @apply whitespace-nowrap text-portfolio-muted;
+}
+
+.hero-terminal__value {
+  @apply break-words text-portfolio-text;
+}
+
+.hero-terminal__value--tight {
+  line-height: 1.35;
+}
+
+.hero-terminal__cursor {
+  @apply h-4 w-2.5 animate-pulse bg-portfolio-accent/80;
+}
+
+@container (max-width: 520px) {
+  .hero-terminal__header {
+    @apply mb-3 pb-3;
+  }
+
+  .hero-terminal {
+    @apply space-y-2;
+    font-size: clamp(0.68rem, min(2.7cqi, 4cqb), 0.8rem);
+  }
+
+  .hero-terminal__row {
+    row-gap: 0.15rem;
+    grid-template-areas:
+      "prompt key"
+      ". value";
+    grid-template-columns: 1em minmax(0, 1fr);
+  }
+
+  .hero-terminal__prompt {
+    grid-area: prompt;
+  }
+
+  .hero-terminal__key {
+    grid-area: key;
+  }
+
+  .hero-terminal__value {
+    grid-area: value;
+  }
+
+  .hero-terminal__row--cursor {
+    @apply items-center;
+    grid-template-areas: "prompt value";
+  }
+}

@@ -6,21 +6,12 @@
 
   <div class="mt-5 flex flex-wrap gap-3">
     @for (link of quickLinks; track link.label) {
-      <a
-        class="inline-flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm transition"
-        [ngClass]="
-          link.icon === 'email'
-            ? 'border-emerald/40 bg-emerald/15 text-emerald hover:bg-emerald/20'
-            : link.icon === 'cv'
-              ? 'border-cyan/40 bg-cyan/10 text-cyan hover:bg-cyan/15'
-              : 'border-border-soft bg-bg-soft text-text-main hover:border-cyan/50 hover:text-cyan'
-        "
-        [href]="link.url"
-        [attr.target]="link.url.startsWith('http') ? '_blank' : null"
-        [attr.rel]="link.url.startsWith('http') ? 'noopener' : null"
-      >
-        {{ link.icon === 'cv' ? 'Download CV' : link.label }}
-      </a>
+      <app-cv-download-button
+        [link]="link"
+        variant="contact"
+        [cvDownloading]="cvDownloading"
+        (cvDownloadStarted)="cvDownloadStarted.emit()"
+      ></app-cv-download-button>
     }
   </div>
 </app-section-card>

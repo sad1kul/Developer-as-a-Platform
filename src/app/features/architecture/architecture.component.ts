@@ -9,6 +9,7 @@ import { SectionCardComponent } from '../../shared/components/section-card/secti
   standalone: true,
   imports: [CommonModule, SectionCardComponent],
   templateUrl: './architecture.component.html',
+  styleUrl: './architecture.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArchitectureComponent {

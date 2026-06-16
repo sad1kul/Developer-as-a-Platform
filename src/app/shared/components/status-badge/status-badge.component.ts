@@ -6,10 +6,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <span class="inline-flex rounded-full border px-2 py-0.5 text-xs font-medium" [ngClass]="classes">
+    <span class="status-badge" [ngClass]="classes">
       {{ label }}
     </span>
   `,
+  styleUrl: './status-badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StatusBadgeComponent {

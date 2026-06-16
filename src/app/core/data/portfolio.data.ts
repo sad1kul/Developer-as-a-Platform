@@ -21,19 +21,20 @@ import {
 
 export const GITHUB_REPO = 'https://github.com/sad1kul/Developer-as-a-Platform';
 export const CV_ASSET_PATH = '/assets/Sadikul-Islam-CV.pdf';
+export const CV_DOWNLOAD_FILENAME = 'Sadikul-Islam-CV.pdf';
 export const CONTACT_EMAIL = 'sadik@sadikul.me';
 
 export const PROFILE_IDENTITY: ProfileIdentity = {
   name: 'Sadikul Islam',
-  title: 'Developer-as-a-Platform',
-  subtitle: 'Angular · TypeScript · Cross-framework frontend architecture',
+  title: 'Frontend Engineer',
+  subtitle: 'Angular, TypeScript, CRM workflows, cross-framework architecture',
   roleLine: 'Software Developer',
   focus:
     'Angular Signals, typed models, custom-element engines, CRM workflow design, fintech support workflows, and practical developer tooling direction.',
   summary:
-    'This portfolio is built as a developer platform, not a static project gallery. It shows how I structure frontend systems around business workflows, framework boundaries, and maintainable UI architecture.',
-  location: 'Bangladesh · South Africa experience',
-  availability: 'Open to: Remote · Hybrid · Relocation-ready roles'
+    'I build clear, maintainable frontend systems for business workflows. This portfolio highlights Angular and TypeScript work, cross-framework integration, and UI patterns shaped by CRM, travel, fintech, and support operations.',
+  location: 'Bangladesh, with South Africa experience',
+  availability: 'Open to remote, hybrid, and relocation-ready roles'
 };
 
 export const NAV_ITEMS: NavItem[] = [
@@ -42,7 +43,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'tech-profile', label: 'Technical Profile', icon: 'tech' },
   { id: 'architecture', label: 'Architecture', icon: 'architecture' },
   { id: 'case-studies', label: 'Case Studies', icon: 'case-studies' },
-  { id: 'systems', label: 'Systems in Progress', icon: 'systems' },
+  { id: 'systems', label: 'Product Roadmap', icon: 'systems' },
   { id: 'about', label: 'About', icon: 'about' },
   { id: 'contact', label: 'Contact', icon: 'contact' }
 ];
@@ -64,7 +65,7 @@ export const QUICK_LINKS: QuickLink[] = [
     label: 'CV',
     url: CV_ASSET_PATH,
     icon: 'cv',
-    ariaLabel: 'Open CV PDF'
+    ariaLabel: 'Download Sadikul Islam CV'
   },
   {
     label: 'Email',
@@ -84,7 +85,7 @@ export const SOURCE_LINKS: SourceLinks = {
 
 export const SYSTEM_STATUS: SystemStatusInfo = {
   live: 'Live: sadikul.me',
-  lastUpdated: 'Last updated: May 26, 2026, 12:17 AM GMT+6',
+  lastUpdated: 'Last updated: Jun 16, 2026, 02:35 PM GMT+6',
   version: 'Version: v1.0.0'
 };
 
@@ -95,7 +96,7 @@ export const FRAMEWORK_ENGINES: FrameworkEngineOption[] = [
 ];
 
 export const WORKBENCH_DISCLAIMER =
-  'Built from scratch as a portfolio demonstration of cross-framework component architecture. Uses local demo data to show filtering, sorting, state handling, and framework integration.';
+  'A portfolio workbench using local demo data to demonstrate filtering, sorting, state handling, typed models, and framework integration.';
 
 export const WORKBENCH_ITEMS: WorkbenchItem[] = [
   {
@@ -201,7 +202,7 @@ export const SORT_OPTIONS: SortOption[] = ['Newest', 'Oldest', 'Priority'];
 
 export const PRINCIPLE_CARDS: PrincipleCard[] = [
   {
-    title: 'Cross-framework by Design',
+    title: 'Cross-framework Architecture',
     description: 'Angular shell with React and Svelte engines mounted as isolated custom elements.',
     icon: 'architecture'
   },
@@ -212,12 +213,12 @@ export const PRINCIPLE_CARDS: PrincipleCard[] = [
   },
   {
     title: 'Signals-first UI State',
-    description: 'Angular Signals and computed state are used for search, sorting, selection, and KPIs.',
+    description: 'Angular Signals and computed state power search, sorting, selection, and KPI views.',
     icon: 'performance'
   },
   {
     title: 'Business Workflow Thinking',
-    description: 'Portfolio modules are modeled around CRM and fintech support operations, not generic demos.',
+    description: 'Modules are modeled around CRM, travel, fintech, and support operations.',
     icon: 'solver'
   },
   {
@@ -226,8 +227,8 @@ export const PRINCIPLE_CARDS: PrincipleCard[] = [
     icon: 'delivery'
   },
   {
-    title: 'Developer Tooling Direction',
-    description: 'Case studies include debugging workflow concepts where AI tools need runtime browser context.',
+    title: 'Developer Tooling Mindset',
+    description: 'Case studies include debugging and API-contract concepts for faster developer feedback.',
     icon: 'dx'
   }
 ];
@@ -235,7 +236,7 @@ export const PRINCIPLE_CARDS: PrincipleCard[] = [
 export const TECH_PROFILE_GROUPS: TechProfileGroup[] = [
   {
     title: 'Angular Frontend',
-    items: ['Angular', 'TypeScript', 'Angular Signals', 'Standalone Components', 'Tailwind']
+    items: ['Angular', 'TypeScript', 'Angular Signals', 'Standalone Components', 'Tailwind CSS']
   },
   {
     title: 'Cross-framework Engines',
@@ -255,12 +256,12 @@ export const TECH_PROFILE_GROUPS: TechProfileGroup[] = [
   },
   {
     title: 'Developer Direction',
-    items: ['AI Debug Bridge Concept', 'API Contract Drift Detection', 'DevTools-first Diagnosis']
+    items: ['Runtime Debugging', 'API Contract Drift Detection', 'DevTools-first Diagnosis']
   }
 ];
 
 export const ARCHITECTURE_SUMMARY =
-  'Angular acts as the shell and orchestration layer, while the workbench demonstrates shared workflow behavior across Angular, React, and Svelte engines with consistent typed demo data.';
+  'Angular acts as the shell and orchestration layer, while the workbench demonstrates the same workflow surface across Angular, React, and Svelte engines using consistent typed demo data.';
 
 export const ARCHITECTURE_LAYERS: ArchitectureLayer[] = [
   {
@@ -285,12 +286,12 @@ export const CASE_STUDIES: CaseStudy[] = [
     id: 'cross-framework-workbench',
     title: 'Cross-Framework Workbench',
     framing: 'Frontend Architecture',
-    problem: 'Static portfolios fail to show real-world state management and component boundaries.',
+    problem: 'Static portfolio pages rarely show how a developer handles state, boundaries, and production-style UI structure.',
     role: 'Architect & Developer',
     tech: ['Angular', 'React', 'Svelte', 'Custom Elements', 'Signals'],
     challenge: 'Isolating multiple frameworks on one page without CSS bleeding or state conflicts.',
     solution: 'Used Angular as the orchestration shell, mounting React and Svelte as isolated Web Components.',
-    outcome: 'Created a unique, interactive platform that proves cross-framework expertise using live demo data.',
+    outcome: 'Built an interactive proof of frontend architecture skills that recruiters and engineers can inspect directly.',
     sourceLabel: 'View architecture source',
     sourceUrl: SOURCE_LINKS.caseStudies
   },
@@ -303,7 +304,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     tech: ['Angular', 'TypeScript', 'State Services'],
     challenge: 'Managing complex, interconnected state across multiple sequential workflow steps.',
     solution: 'Built a unified dashboard shell where search and booking steps share a single reactive state model.',
-    outcome: 'Streamlined agent workflows, directly reducing average handle time (AHT) for support tickets.',
+    outcome: 'Demonstrates how a shared state model can reduce context switching and make support workflows easier to follow.',
     sourceLabel: 'View module direction',
     sourceUrl: SOURCE_LINKS.angularWorkbench
   },
@@ -316,20 +317,20 @@ export const CASE_STUDIES: CaseStudy[] = [
     tech: ['Angular', 'Forms', 'Status Models'],
     challenge: 'Simplifying complex financial data into actionable, skimmable support tickets.',
     solution: 'Modeled a status-driven queue with rapid filtering and guided dispute resolution actions.',
-    outcome: 'Accelerated ticket triaging and reduced manual errors in the escalation pipeline.',
+    outcome: 'Shows a practical queue model for triage, ownership, and escalation in regulated support contexts.',
     sourceLabel: 'View data model',
     sourceUrl: SOURCE_LINKS.dataModels
   },
   {
     id: 'ai-browser-debug-bridge',
-    title: 'AI Debug Bridge',
+    title: 'Runtime Debug Bridge',
     framing: 'Developer Tooling',
-    problem: 'AI coding assistants lack live browser context (DOM, console, network) when debugging.',
+    problem: 'Coding assistants often lack live browser context such as DOM state, console errors, and network activity.',
     role: 'Concept Designer',
     tech: ['WebSockets', 'Browser Extensions', 'Agent Tooling'],
     challenge: 'Securely capturing and streaming runtime browser signals to local AI agents.',
-    solution: 'Designed a conceptual bridge to feed live network and console data directly into IDE assistants.',
-    outcome: 'Established a forward-looking roadmap for AI-integrated developer debugging workflows.',
+    solution: 'Designed a browser-to-editor concept for sharing runtime signals with local development tools.',
+    outcome: 'Defines a credible roadmap for faster diagnosis across frontend debugging and API integration issues.',
     sourceLabel: 'View technical notes',
     sourceUrl: SOURCE_LINKS.caseStudies
   }
@@ -340,9 +341,9 @@ export const SYSTEMS_IN_PROGRESS: SystemProgressItem[] = [
     title: 'Developer-as-a-Platform',
     status: 'Building',
     businessProblem:
-      'Recruiters often see static portfolios that do not show real frontend architecture decisions or state modeling depth.',
+      'Recruiters and hiring teams need more than screenshots to evaluate frontend engineering judgment.',
     plannedDirection:
-      'Continue expanding the workbench and case-study depth with clearer architecture decisions and technical write-ups.'
+      'Continue expanding case studies, architecture notes, and inspectable source links for faster technical evaluation.'
   },
   {
     title: 'TrustBridge',
@@ -371,12 +372,12 @@ export const SYSTEMS_IN_PROGRESS: SystemProgressItem[] = [
 ];
 
 export const ABOUT_PARAGRAPHS: string[] = [
-  'I work across frontend architecture and business-aware UI workflows. My background combines software development with operational support context, which helps me design interfaces that are technically clear and practically useful.',
-  'I focus on Angular and TypeScript, and I actively explore cross-framework architecture through React and Svelte custom elements. I am building this portfolio as a developer platform to show how I think through real workflow problems, not just visual components.'
+  'I am a frontend-focused software developer who builds business workflow interfaces with Angular, TypeScript, and clear component architecture. My background also includes operational support context, which helps me design tools that are practical for agents, customers, and internal teams.',
+  'I use this portfolio to show how I think through state, data contracts, framework boundaries, and recruiter-visible delivery quality. The workbench is intentionally interactive so hiring teams can evaluate more than visual polish.'
 ];
 
 export const CONTACT_OPPORTUNITY_TEXT =
-  'Open to software developer, frontend engineer, Angular-focused, CRM workflow, fintech support workflow, and developer-tooling oriented roles.';
+  'Open to Frontend Engineer and Software Developer roles where Angular, TypeScript, business workflow UI, CRM/support tooling, or developer productivity are central.';
 
 export const CONTEXT_TABS: ContextTab[] = ['Source Code', 'State', 'Architecture', 'Trade-offs'];
 

@@ -6,9 +6,9 @@
 
   <div class="mt-4 grid gap-3 md:grid-cols-3">
     @for (layer of layers; track layer.title) {
-      <article class="rounded-xl border border-border-soft bg-bg-soft/65 p-4">
-        <h3 class="text-sm font-semibold" [ngClass]="accentClass(layer.accent)">{{ layer.title }}</h3>
-        <p class="mt-2 text-sm text-text-muted">{{ layer.description }}</p>
+      <article class="architecture-card">
+        <h3 class="architecture-card__title" [ngClass]="accentClass(layer.accent)">{{ layer.title }}</h3>
+        <p class="architecture-card__copy">{{ layer.description }}</p>
       </article>
     }
   </div>

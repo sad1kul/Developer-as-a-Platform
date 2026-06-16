@@ -8,6 +8,7 @@ import { SectionCardComponent } from '../../shared/components/section-card/secti
   standalone: true,
   imports: [CommonModule, SectionCardComponent],
   templateUrl: './about.component.html',
+  styleUrl: './about.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent {

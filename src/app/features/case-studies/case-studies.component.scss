@@ -1,0 +1,104 @@
+:host {
+  display: block;
+}
+
+.case-studies__intro {
+  @apply mb-6;
+}
+
+.case-studies__summary {
+  @apply mt-2 text-sm text-text-muted;
+}
+
+.case-study-card {
+  @apply relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border-soft bg-bg-soft/50 p-6 transition-all duration-300 hover:border-cyan/40 hover:bg-bg-soft/80 hover:shadow-lg hover:shadow-cyan/5;
+}
+
+.case-study-card__badge {
+  @apply absolute right-0 top-0 rounded-bl-xl border-b border-l border-border-soft bg-bg-main/80 px-3 py-1.5 backdrop-blur-sm;
+
+  span {
+    @apply text-[10px] font-bold uppercase tracking-widest text-cyan/90;
+  }
+}
+
+.case-study-card__header {
+  @apply mb-6 pr-24;
+}
+
+.case-study-card__title {
+  @apply text-xl font-bold text-text-main transition-colors group-hover:text-cyan;
+}
+
+.case-study-card__role {
+  @apply mt-1 text-xs font-medium text-text-muted/80;
+}
+
+.case-study-card__flow {
+  @apply relative space-y-4 before:absolute before:left-[11px] before:top-2 before:h-[calc(100%-1.5rem)] before:w-px before:bg-border-soft;
+}
+
+.case-study-card__step {
+  @apply relative pl-8;
+}
+
+.case-study-card__dot {
+  @apply absolute left-[7px] top-1.5 h-2 w-2 rounded-full ring-4 ring-bg-soft/80;
+}
+
+.case-study-card__step--problem .case-study-card__dot {
+  @apply bg-danger/50;
+}
+
+.case-study-card__step--problem .case-study-card__label {
+  @apply text-danger/80;
+}
+
+.case-study-card__step--solution .case-study-card__dot {
+  @apply bg-emerald/50;
+}
+
+.case-study-card__step--solution .case-study-card__label {
+  @apply text-emerald/80;
+}
+
+.case-study-card__label,
+.case-study-card__impact-label {
+  @apply mb-1 text-xs font-bold uppercase tracking-wide;
+}
+
+.case-study-card__copy {
+  @apply text-sm leading-relaxed text-text-muted;
+}
+
+.case-study-card__impact {
+  @apply mt-6 rounded-xl border border-purple/10 bg-purple/5 p-3.5;
+}
+
+.case-study-card__impact-label {
+  @apply text-purple;
+}
+
+.case-study-card__impact-copy {
+  @apply text-sm font-medium leading-relaxed text-text-main;
+}
+
+.case-study-card__footer {
+  @apply mt-6 border-t border-border-soft/60 pt-5;
+}
+
+.case-study-card__tags {
+  @apply mb-4 flex flex-wrap gap-1.5;
+}
+
+.case-study-card__tag {
+  @apply rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted;
+}
+
+.case-study-card__link {
+  @apply inline-flex items-center gap-1.5 text-sm font-medium text-text-main underline-offset-4 transition-colors hover:text-cyan group-hover:underline decoration-cyan/30;
+}
+
+.case-study-card__link-icon {
+  @apply h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5;
+}

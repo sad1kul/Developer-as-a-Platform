@@ -2,45 +2,27 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output, signal } from '@angular/core';
 
 import { NavSectionId, ProfileIdentity, QuickLink } from '../../core/models/portfolio.model';
+import { CvDownloadButtonComponent } from '../../shared/components/cv-download-button/cv-download-button.component';
 import { SectionCardComponent } from '../../shared/components/section-card/section-card.component';
-import { quickLinkIconPath } from '../../shared/utils/icon.utils';
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule, SectionCardComponent],
+  imports: [CommonModule, SectionCardComponent, CvDownloadButtonComponent],
   templateUrl: './hero.component.html',
-  styles: `
-    .perspective-1000 {
-      perspective: 1000px;
-    }
-
-    .transform-style-3d {
-      transform-style: preserve-3d;
-    }
-
-    .backface-hidden {
-      backface-visibility: hidden;
-    }
-
-    .rotate-y-180 {
-      transform: rotateY(180deg);
-    }
-  `,
+  styleUrl: './hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeroComponent implements OnInit, OnDestroy {
   @Input({ required: true }) profile!: ProfileIdentity;
   @Input({ required: true }) quickLinks: QuickLink[] = [];
+  @Input() cvDownloading = false;
 
   @Output() sectionRequested = new EventEmitter<NavSectionId>();
+  @Output() cvDownloadStarted = new EventEmitter<void>();
 
   socialLinks(): QuickLink[] {
     return this.quickLinks.filter((item) => item.icon === 'github' || item.icon === 'linkedin' || item.icon === 'cv');
-  }
-
-  quickIconPath(icon: QuickLink['icon']): string {
-    return quickLinkIconPath(icon);
   }
 
   readonly isFlipped = signal(true);

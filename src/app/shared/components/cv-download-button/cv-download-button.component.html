@@ -1,0 +1,46 @@
+<a
+  class="cv-download-button"
+  [class.cv-download-button--hero]="variant === 'hero'"
+  [class.cv-download-button--contact]="variant === 'contact'"
+  [class.cv-download-button--sidebar]="variant === 'sidebar'"
+  [class.is-email]="link.icon === 'email'"
+  [class.is-cv]="isCvLink"
+  [class.is-default]="link.icon !== 'email' && !isCvLink"
+  [class.is-downloading]="isDownloading"
+  [href]="link.url"
+  [attr.target]="isExternalLink ? '_blank' : null"
+  [attr.rel]="isExternalLink ? 'noopener' : null"
+  [attr.download]="downloadName"
+  [attr.aria-label]="link.ariaLabel"
+  (click)="handleClick()"
+>
+  @if (variant === 'contact') {
+    @if (isDownloading) {
+      <svg class="cv-download-button__spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+    }
+    {{ label }}
+  } @else {
+    @if (isDownloading) {
+      <svg class="cv-download-button__spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+      </svg>
+      @if (variant === 'hero') {
+        <span class="cv-download-button__label">{{ label }}</span>
+      }
+    } @else {
+      <svg
+        viewBox="0 0 24 24"
+        class="cv-download-button__icon"
+        [attr.fill]="iconFill"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
+        <path [attr.d]="quickIconPath(link.icon)"></path>
+      </svg>
+    }
+  }
+</a>

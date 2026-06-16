@@ -9,6 +9,7 @@ import { navIconPath } from '../../shared/utils/icon.utils';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './top-status-bar.component.html',
+  styleUrl: './top-status-bar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopStatusBarComponent {
@@ -21,7 +22,5 @@ export class TopStatusBarComponent {
   @Output() menuToggled = new EventEmitter<void>();
   @Output() sectionSelected = new EventEmitter<NavSectionId>();
 
-  navPath(icon: NavItem['icon']): string {
-    return navIconPath(icon);
-  }
+  readonly navPath = navIconPath;
 }

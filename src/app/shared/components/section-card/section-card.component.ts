@@ -4,13 +4,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'app-section-card',
   standalone: true,
   template: `
-    <section
-      [id]="sectionId"
-      class="scroll-mt-24 rounded-2xl border border-border-soft/90 bg-bg-surface/85 p-4 shadow-soft backdrop-blur sm:p-6"
-    >
+    <section [id]="sectionId" class="section-card">
       <ng-content></ng-content>
     </section>
   `,
+  styleUrl: './section-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SectionCardComponent {

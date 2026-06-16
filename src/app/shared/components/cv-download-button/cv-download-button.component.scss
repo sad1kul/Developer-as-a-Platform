@@ -1,0 +1,60 @@
+:host {
+  display: inline-flex;
+}
+
+.cv-download-button {
+  @apply inline-flex items-center transition;
+}
+
+.cv-download-button--hero {
+  @apply h-10 w-10 justify-center overflow-hidden rounded-md border border-portfolio-border bg-portfolio-panel text-portfolio-text duration-200 hover:border-portfolio-text;
+}
+
+.cv-download-button--hero.is-downloading {
+  @apply w-36 gap-2 border-portfolio-accent bg-portfolio-accent px-3 text-portfolio-bg;
+}
+
+.cv-download-button--contact {
+  @apply gap-2 rounded-lg border px-4 py-2.5 text-sm;
+}
+
+.cv-download-button--contact.is-email {
+  @apply border-emerald/40 bg-emerald/15 text-emerald hover:bg-emerald/20;
+}
+
+.cv-download-button--contact.is-cv {
+  @apply border-cyan/40 bg-cyan/10 text-cyan hover:bg-cyan/15;
+}
+
+.cv-download-button--contact.is-default {
+  @apply border-border-soft bg-bg-soft text-text-main hover:border-cyan/50 hover:text-cyan;
+}
+
+.cv-download-button--contact.is-downloading {
+  @apply border-cyan/50 bg-cyan/15;
+}
+
+.cv-download-button--sidebar {
+  @apply justify-center rounded-lg border border-border-soft bg-bg-soft px-2 py-2 text-text-muted hover:border-cyan/40 hover:text-cyan;
+}
+
+.cv-download-button--sidebar.is-downloading {
+  @apply border-emerald/45 bg-emerald/15 text-emerald;
+}
+
+.cv-download-button__spinner {
+  @apply h-4 w-4 animate-spin;
+}
+
+.cv-download-button__label {
+  @apply whitespace-nowrap text-xs font-semibold;
+}
+
+.cv-download-button--hero .cv-download-button__icon {
+  @apply h-[18px] w-[18px];
+}
+
+.cv-download-button--sidebar .cv-download-button__icon,
+.cv-download-button--sidebar .cv-download-button__spinner {
+  @apply h-5 w-5;
+}

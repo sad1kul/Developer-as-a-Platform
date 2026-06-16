@@ -1,0 +1,277 @@
+:host {
+  display: block;
+}
+
+.workbench__header {
+  @apply flex items-start justify-between gap-4;
+}
+
+.workbench__subtitle {
+  @apply mt-1 text-sm text-text-muted;
+}
+
+.workbench__disclaimer {
+  @apply mt-2 text-xs text-text-muted;
+}
+
+.workbench__badge {
+  @apply mt-2 inline-flex rounded-md border border-cyan/30 bg-cyan/10 px-2 py-1 text-xs font-medium text-cyan;
+}
+
+.workbench__engine-panel {
+  @apply flex flex-col items-end gap-3;
+}
+
+.workbench__engine-selector {
+  @apply flex flex-shrink-0 flex-nowrap items-center justify-end gap-2 text-sm;
+}
+
+.workbench__engine-label {
+  @apply whitespace-nowrap text-text-muted;
+}
+
+.engine-button {
+  @apply inline-flex items-center gap-1.5 rounded-lg border border-border-soft bg-bg-soft px-3 py-1.5 font-medium text-text-muted transition hover:border-border-active hover:text-text-main;
+}
+
+.engine-button.is-angular {
+  @apply border-emerald/60 bg-emerald/15 text-emerald;
+}
+
+.engine-button.is-react {
+  @apply border-cyan/60 bg-cyan/15 text-cyan;
+}
+
+.engine-button.is-svelte {
+  @apply border-svelte/60 bg-svelte/15 text-svelte;
+}
+
+.engine-pill {
+  @apply inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold;
+  border-color: color-mix(in srgb, var(--active-engine) 55%, transparent);
+  background-color: color-mix(in srgb, var(--active-engine) 10%, transparent);
+  color: var(--active-engine);
+}
+
+.engine-pill__dot {
+  @apply h-2 w-2 rounded-full;
+  background-color: var(--active-engine);
+}
+
+.kpi-grid {
+  @apply mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5;
+}
+
+.kpi-card {
+  @apply rounded-xl border border-border-soft bg-bg-soft/70 p-3.5;
+}
+
+.kpi-card__label {
+  @apply text-xs uppercase tracking-[0.1em] text-text-muted;
+}
+
+.kpi-card__value {
+  @apply mt-2 text-2xl font-semibold;
+}
+
+.kpi-card__caption {
+  @apply mt-1 text-xs font-medium;
+}
+
+.workbench-toolbar {
+  @apply mt-4 flex flex-col gap-3 rounded-xl border border-border-soft bg-bg-soft/60 p-3 lg:flex-row lg:items-center lg:justify-between;
+}
+
+.workbench-toolbar__fields {
+  @apply grid flex-1 gap-2 sm:grid-cols-2 xl:grid-cols-3;
+}
+
+.workbench-control {
+  @apply w-full rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main placeholder:text-text-muted focus:border-cyan/60;
+}
+
+.simulate-button {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-cyan/50 hover:text-cyan;
+}
+
+.simulate-button__icon {
+  @apply h-4 w-4;
+}
+
+.simulate-button__time {
+  @apply text-xs text-text-muted;
+}
+
+.workbench-layout {
+  @apply mt-4 flex flex-col gap-4 lg:h-[500px] lg:flex-row lg:items-start;
+}
+
+.workbench-list {
+  @apply flex min-w-0 flex-1 flex-col lg:h-full lg:overflow-hidden;
+}
+
+.mobile-workflows {
+  @apply space-y-3 md:hidden;
+}
+
+.empty-state {
+  @apply rounded-xl border border-border-soft bg-bg-soft/60 px-4 py-8 text-center text-sm text-text-muted;
+}
+
+.workflow-card {
+  @apply w-full rounded-xl border border-border-soft bg-bg-soft/60 p-4 text-left transition hover:border-cyan/40;
+}
+
+.workflow-card.is-selected {
+  border-color: var(--active-engine);
+  background-color: color-mix(in srgb, var(--active-engine) 12%, transparent);
+  box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--active-engine) 85%, transparent);
+}
+
+.workflow-card__header {
+  @apply flex items-start justify-between gap-3;
+}
+
+.workflow-card__name {
+  @apply block font-medium text-text-main;
+}
+
+.workflow-card__meta {
+  @apply mt-1 block font-mono text-xs text-text-muted;
+}
+
+.workflow-card__facts {
+  @apply mt-3 grid gap-2 text-xs text-text-muted;
+}
+
+.workflow-card__description {
+  @apply mt-3 block text-sm leading-relaxed text-text-muted;
+}
+
+.workflow-card__tags,
+.workflow-detail__tags {
+  @apply flex flex-wrap gap-2;
+}
+
+.workflow-card__tags {
+  @apply mt-3;
+}
+
+.workflow-tag {
+  @apply rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-xs text-text-main;
+}
+
+.workflow-table {
+  @apply hidden rounded-xl border border-border-soft bg-bg-soft/60 md:flex md:flex-col lg:flex-1 lg:overflow-hidden;
+}
+
+.workflow-table__header,
+.workflow-row {
+  @apply grid grid-cols-[74px_1fr_120px_120px] gap-4;
+}
+
+.workflow-table__header {
+  @apply border-b border-border-soft/80 bg-bg-main/50 px-3 py-2.5 text-xs font-medium uppercase tracking-[0.08em] text-text-muted;
+}
+
+.workflow-table__body {
+  @apply flex flex-col lg:flex-1 lg:overflow-y-auto;
+}
+
+.workflow-row {
+  @apply cursor-pointer items-center border-b border-border-soft/50 px-3 py-3 text-sm transition hover:bg-bg-main/50;
+}
+
+.workflow-row.is-selected {
+  background-color: color-mix(in srgb, var(--active-engine) 8%, transparent);
+  box-shadow: inset 2px 0 0 0 color-mix(in srgb, var(--active-engine) 85%, transparent);
+}
+
+.workflow-row__id {
+  @apply font-mono text-xs text-text-muted;
+}
+
+.workflow-row__name {
+  @apply block truncate font-medium text-text-main;
+}
+
+.workflow-row__category {
+  @apply mt-0.5 block truncate font-mono text-xs text-text-muted;
+}
+
+.workflow-row__updated {
+  @apply whitespace-nowrap text-right text-xs text-text-muted;
+}
+
+.workflow-detail {
+  @apply w-full overflow-hidden rounded-xl border border-border-soft bg-bg-soft/70 lg:h-full lg:w-72 lg:flex-shrink-0 lg:overflow-y-auto;
+}
+
+.workflow-detail__accent {
+  @apply h-0.5 w-full;
+  background-color: var(--active-engine);
+}
+
+.workflow-detail__body {
+  @apply p-5;
+}
+
+.workflow-detail__title {
+  @apply text-lg font-semibold text-text-main;
+}
+
+.workflow-detail__meta {
+  @apply mb-5 mt-2 flex items-center justify-between border-b border-border-soft pb-4;
+}
+
+.workflow-detail__id {
+  @apply font-mono text-xs text-text-muted;
+}
+
+.workflow-detail__sections {
+  @apply space-y-5;
+}
+
+.workflow-detail__label {
+  @apply mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted;
+}
+
+.workflow-detail__copy {
+  @apply text-sm leading-relaxed text-text-main;
+}
+
+.workflow-detail__copy--short {
+  @apply leading-normal;
+}
+
+.engine-load {
+  @apply rounded-xl p-5;
+}
+
+.engine-load--loading {
+  @apply border border-cyan/25 bg-cyan/10;
+}
+
+.engine-load--error {
+  @apply border border-danger/35 bg-danger/10;
+}
+
+.engine-load__text {
+  @apply inline-flex items-center gap-2 text-sm font-medium text-cyan;
+}
+
+.engine-load__dot {
+  @apply h-2 w-2 rounded-full bg-cyan;
+}
+
+.engine-load__title {
+  @apply text-sm font-medium text-danger;
+}
+
+.engine-load__copy {
+  @apply mt-2 text-sm leading-relaxed text-text-muted;
+}
+
+.engine-load__retry {
+  @apply mt-4 rounded-lg border border-border-soft bg-bg-main/70 px-3 py-2 text-sm text-text-main transition hover:border-emerald/50 hover:text-emerald;
+}

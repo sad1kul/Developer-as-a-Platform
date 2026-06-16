@@ -10,6 +10,7 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge/statu
   standalone: true,
   imports: [CommonModule, SectionCardComponent, StatusBadgeComponent],
   templateUrl: './systems-in-progress.component.html',
+  styleUrl: './systems-in-progress.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SystemsInProgressComponent {

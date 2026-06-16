@@ -1,3 +1,28 @@
 :host {
   display: block;
 }
+
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(71, 191, 217, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 191, 217, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.portfolio-container {
+  max-width: 2100px;
+}
+
+.portfolio-layout-grid {
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: 260px minmax(0, 1fr) 320px;
+  }
+}
+

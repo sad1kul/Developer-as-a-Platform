@@ -1,25 +1,33 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-icon-button',
   standalone: true,
+  imports: [CommonModule],
   template: `
     <a
-      [attr.class]="buttonClass"
+      class="icon-button"
+      [ngClass]="buttonClass"
       [href]="href"
       [attr.target]="external ? '_blank' : null"
       [attr.rel]="external ? 'noopener' : null"
+      [attr.download]="download"
       [attr.aria-label]="ariaLabel"
+      (click)="buttonClicked.emit($event)"
     >
       <ng-content></ng-content>
     </a>
   `,
+  styleUrl: './icon-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconButtonComponent {
   @Input({ required: true }) href!: string;
   @Input({ required: true }) ariaLabel!: string;
   @Input() external = true;
-  @Input() buttonClass =
-    'inline-flex items-center justify-center rounded-lg border border-border-soft bg-bg-soft px-2 py-2 text-text-muted hover:border-cyan/40 hover:text-cyan';
+  @Input() download: string | null = null;
+  @Input() buttonClass: string | string[] | Record<string, boolean> = '';
+
+  @Output() buttonClicked = new EventEmitter<MouseEvent>();
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostListener, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, signal } from '@angular/core';
 
 import {
   ABOUT_PARAGRAPHS,
@@ -28,6 +28,8 @@ import { RightContextPanelComponent } from './layout/right-context-panel/right-c
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { TopStatusBarComponent } from './layout/top-status-bar/top-status-bar.component';
 
+type CvDownloadContext = 'hero' | 'sidebar' | 'contact';
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -49,7 +51,7 @@ import { TopStatusBarComponent } from './layout/top-status-bar/top-status-bar.co
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnDestroy {
   readonly profile = PROFILE_IDENTITY;
   readonly navItems = NAV_ITEMS;
   readonly quickLinks = QUICK_LINKS;
@@ -65,7 +67,9 @@ export class AppComponent {
 
   readonly mobileMenuOpen = signal(false);
   readonly activeSection = signal<NavSectionId>('overview');
-  readonly cvModalOpen = signal(false);
+  readonly cvDownloadContext = signal<CvDownloadContext | null>(null);
+
+  private cvDownloadFeedbackTimeout?: ReturnType<typeof setTimeout>;
 
   setActiveSection(section: NavSectionId): void {
     this.activeSection.set(section);
@@ -81,14 +85,22 @@ export class AppComponent {
     document.getElementById(section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    const anchor = target.closest('a');
-    
-    if (anchor && anchor.href && anchor.href.includes('Sadikul-Islam-CV.pdf')) {
-      event.preventDefault();
-      this.cvModalOpen.set(true);
+  showCvDownloadFeedback(context: CvDownloadContext): void {
+    this.cvDownloadContext.set(context);
+
+    if (this.cvDownloadFeedbackTimeout) {
+      clearTimeout(this.cvDownloadFeedbackTimeout);
+    }
+
+    this.cvDownloadFeedbackTimeout = setTimeout(() => {
+      this.cvDownloadContext.set(null);
+      this.cvDownloadFeedbackTimeout = undefined;
+    }, 1000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.cvDownloadFeedbackTimeout) {
+      clearTimeout(this.cvDownloadFeedbackTimeout);
     }
   }
 }

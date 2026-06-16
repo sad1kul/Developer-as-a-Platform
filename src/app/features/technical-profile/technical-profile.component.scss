@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.profile-card {
+  @apply rounded-xl border border-border-soft bg-bg-soft/65 p-4;
+}
+
+.profile-card__icon {
+  @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border-soft bg-bg-main/60 text-cyan;
+}
+
+.profile-card__svg {
+  @apply h-5 w-5;
+}
+
+.profile-card__title {
+  @apply mt-3 text-base font-medium;
+}
+
+.profile-card__copy {
+  @apply mt-1 text-sm text-text-muted;
+}
+
+.profile-card__eyebrow {
+  @apply text-sm font-semibold uppercase tracking-[0.08em] text-cyan;
+}
+
+.profile-card__tags {
+  @apply mt-3 flex flex-wrap gap-2;
+}
+
+.profile-card__tag {
+  @apply rounded-md border border-border-soft bg-bg-main/65 px-2 py-1 text-xs text-text-main;
+}

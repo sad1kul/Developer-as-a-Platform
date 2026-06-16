@@ -1,0 +1,56 @@
+:host {
+  display: contents;
+}
+
+.top-status-bar {
+  @apply sticky top-0 z-50 border-b border-border-soft/80 bg-bg-surface/95 backdrop-blur lg:hidden;
+}
+
+.top-status-bar__inner {
+  @apply mx-auto flex max-w-[1900px] items-center justify-between px-4 py-3;
+}
+
+.top-status-bar__identity {
+  @apply flex items-center gap-3;
+}
+
+.top-status-bar__mark {
+  @apply flex h-10 w-10 items-center justify-center rounded-lg border border-emerald/40 bg-emerald/10 text-emerald;
+}
+
+.top-status-bar__mark-icon,
+.top-status-bar__menu-icon {
+  @apply h-5 w-5;
+}
+
+.top-status-bar__name {
+  @apply text-sm font-semibold;
+}
+
+.top-status-bar__title {
+  @apply text-xs text-text-muted;
+}
+
+.top-status-bar__menu {
+  @apply inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border-soft bg-bg-soft text-text-main transition hover:border-cyan/50;
+}
+
+.top-status-bar__nav {
+  @apply border-t border-border-soft/80 bg-bg-surface px-4 py-3;
+}
+
+.top-status-bar__nav-list {
+  @apply space-y-1;
+}
+
+.top-status-bar__nav-link {
+  @apply flex items-center gap-3 rounded-lg border border-transparent px-3 py-2 text-sm text-text-muted transition hover:border-border-soft hover:bg-bg-soft hover:text-text-main;
+}
+
+.top-status-bar__nav-link.is-active {
+  @apply border-border-active bg-emerald/15 text-emerald shadow-active;
+}
+
+.top-status-bar__nav-icon {
+  @apply h-4 w-4;
+}

@@ -1,71 +1,62 @@
 <app-section-card sectionId="case-studies">
-  <div class="mb-6">
+  <div class="case-studies__intro">
     <h2 class="text-2xl font-semibold tracking-tight">Case Studies</h2>
-    <p class="mt-2 text-sm text-text-muted">Selected highlights demonstrating architecture, workflow design, and problem-solving.</p>
+    <p class="case-studies__summary">Selected highlights demonstrating architecture, workflow design, and problem-solving.</p>
   </div>
-  
+
   <div class="grid gap-4 md:grid-cols-2">
     @for (study of caseStudies; track study.id) {
-      <article class="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border-soft bg-bg-soft/50 p-6 transition-all duration-300 hover:border-cyan/40 hover:bg-bg-soft/80 hover:shadow-lg hover:shadow-cyan/5">
-        
-        <!-- Framing Badge -->
-        <div class="absolute right-0 top-0 rounded-bl-xl bg-bg-main/80 px-3 py-1.5 border-b border-l border-border-soft backdrop-blur-sm">
-          <span class="text-[10px] font-bold uppercase tracking-widest text-cyan/90">{{ study.framing }}</span>
+      <article class="case-study-card group">
+        <div class="case-study-card__badge">
+          <span>{{ study.framing }}</span>
         </div>
 
         <div>
-          <!-- Title & Role -->
-          <div class="mb-6 pr-24">
-            <h3 class="text-xl font-bold text-text-main transition-colors group-hover:text-cyan">{{ study.title }}</h3>
-            <p class="mt-1 text-xs font-medium text-text-muted/80">{{ study.role }}</p>
+          <div class="case-study-card__header">
+            <h3 class="case-study-card__title">{{ study.title }}</h3>
+            <p class="case-study-card__role">{{ study.role }}</p>
           </div>
 
-          <!-- Problem & Solution Flow -->
-          <div class="relative space-y-4 before:absolute before:left-[11px] before:top-2 before:h-[calc(100%-1.5rem)] before:w-px before:bg-border-soft">
-            
-            <div class="relative pl-8">
-              <div class="absolute left-[7px] top-1.5 h-2 w-2 rounded-full bg-danger/50 ring-4 ring-bg-soft/80"></div>
-              <p class="text-xs font-bold tracking-wide text-danger/80 uppercase mb-1">Problem</p>
-              <p class="text-sm leading-relaxed text-text-muted">{{ study.problem }}</p>
-            </div>
-            
-            <div class="relative pl-8">
-              <div class="absolute left-[7px] top-1.5 h-2 w-2 rounded-full bg-emerald/50 ring-4 ring-bg-soft/80"></div>
-              <p class="text-xs font-bold tracking-wide text-emerald/80 uppercase mb-1">Solution</p>
-              <p class="text-sm leading-relaxed text-text-muted">{{ study.solution }}</p>
+          <div class="case-study-card__flow">
+            <div class="case-study-card__step case-study-card__step--problem">
+              <div class="case-study-card__dot"></div>
+              <p class="case-study-card__label">Problem</p>
+              <p class="case-study-card__copy">{{ study.problem }}</p>
             </div>
 
+            <div class="case-study-card__step case-study-card__step--solution">
+              <div class="case-study-card__dot"></div>
+              <p class="case-study-card__label">Solution</p>
+              <p class="case-study-card__copy">{{ study.solution }}</p>
+            </div>
           </div>
 
-          <!-- Outcome Highlight -->
-          <div class="mt-6 rounded-xl border border-purple/10 bg-purple/5 p-3.5">
-            <p class="text-xs font-bold tracking-wide text-purple uppercase mb-1">Impact</p>
-            <p class="text-sm font-medium leading-relaxed text-text-main">{{ study.outcome }}</p>
+          <div class="case-study-card__impact">
+            <p class="case-study-card__impact-label">Impact</p>
+            <p class="case-study-card__impact-copy">{{ study.outcome }}</p>
           </div>
         </div>
 
-        <!-- Footer: Tech & Link -->
-        <div class="mt-6 border-t border-border-soft/60 pt-5">
-          <div class="mb-4 flex flex-wrap gap-1.5">
+        <div class="case-study-card__footer">
+          <div class="case-study-card__tags">
             @for (tag of study.tech; track tag) {
-              <span class="rounded-md border border-border-soft bg-bg-main/70 px-2 py-1 text-[10px] font-semibold text-text-muted uppercase tracking-wider">{{ tag }}</span>
+              <span class="case-study-card__tag">{{ tag }}</span>
             }
           </div>
-          
+
           <a
-            class="inline-flex items-center gap-1.5 text-sm font-medium text-text-main transition-colors hover:text-cyan group-hover:underline decoration-cyan/30 underline-offset-4"
+            class="case-study-card__link"
             [href]="study.sourceUrl"
             target="_blank"
             rel="noopener"
           >
             {{ study.sourceLabel }}
-            <svg class="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="case-study-card__link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
         </div>
-        
       </article>
     }
   </div>

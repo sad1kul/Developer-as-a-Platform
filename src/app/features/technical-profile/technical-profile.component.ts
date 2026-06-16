@@ -10,13 +10,12 @@ import { principleIconPath } from '../../shared/utils/icon.utils';
   standalone: true,
   imports: [CommonModule, SectionCardComponent],
   templateUrl: './technical-profile.component.html',
+  styleUrl: './technical-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TechnicalProfileComponent {
   @Input({ required: true }) principles: PrincipleCard[] = [];
   @Input({ required: true }) groups: TechProfileGroup[] = [];
 
-  principlePath(icon: PrincipleCard['icon']): string {
-    return principleIconPath(icon);
-  }
+  readonly principlePath = principleIconPath;
 }

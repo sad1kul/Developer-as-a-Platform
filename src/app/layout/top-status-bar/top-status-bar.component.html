@@ -1,45 +1,41 @@
-<header class="sticky top-0 z-50 border-b border-border-soft/80 bg-bg-surface/95 backdrop-blur lg:hidden">
-  <div class="mx-auto flex max-w-[1900px] items-center justify-between px-4 py-3">
-    <div class="flex items-center gap-3">
-      <span class="flex h-10 w-10 items-center justify-center rounded-lg border border-emerald/40 bg-emerald/10 text-emerald">
-        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+<header class="top-status-bar">
+  <div class="top-status-bar__inner">
+    <div class="top-status-bar__identity">
+      <span class="top-status-bar__mark">
+        <svg viewBox="0 0 24 24" class="top-status-bar__mark-icon" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M12 3 4 8v8l8 5 8-5V8z"></path>
           <path d="m8 10 4-2 4 2-4 2-4-2Zm0 4 4 2 4-2"></path>
         </svg>
       </span>
       <div>
-        <p class="text-sm font-semibold">{{ profileName }}</p>
-        <p class="text-xs text-text-muted">{{ profileTitle }}</p>
+        <p class="top-status-bar__name">{{ profileName }}</p>
+        <p class="top-status-bar__title">{{ profileTitle }}</p>
       </div>
     </div>
     <button
       type="button"
-      class="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border-soft bg-bg-soft text-text-main transition hover:border-cyan/50"
+      class="top-status-bar__menu"
       aria-label="Toggle navigation menu"
       (click)="menuToggled.emit()"
     >
-      <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+      <svg viewBox="0 0 24 24" class="top-status-bar__menu-icon" fill="none" stroke="currentColor" stroke-width="1.8">
         <path d="M4 7h16M4 12h16M4 17h16"></path>
       </svg>
     </button>
   </div>
 
   @if (mobileMenuOpen) {
-    <nav class="border-t border-border-soft/80 bg-bg-surface px-4 py-3" aria-label="Mobile navigation">
-      <ul class="space-y-1">
+    <nav class="top-status-bar__nav" aria-label="Mobile navigation">
+      <ul class="top-status-bar__nav-list">
         @for (item of navItems; track item.id) {
           <li>
             <a
               [href]="'#' + item.id"
-              class="flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition"
-              [ngClass]="
-                item.id === activeSection
-                  ? 'border-border-active bg-emerald/15 text-emerald shadow-active'
-                  : 'border-transparent text-text-muted hover:border-border-soft hover:bg-bg-soft hover:text-text-main'
-              "
+              class="top-status-bar__nav-link"
+              [class.is-active]="item.id === activeSection"
               (click)="sectionSelected.emit(item.id)"
             >
-              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8">
+              <svg viewBox="0 0 24 24" class="top-status-bar__nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
                 <path [attr.d]="navPath(item.icon)"></path>
               </svg>
               <span>{{ item.label }}</span>

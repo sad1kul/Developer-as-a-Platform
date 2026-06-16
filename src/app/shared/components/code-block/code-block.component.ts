@@ -8,6 +8,7 @@ import { CodeSample } from '../../../core/models/portfolio.model';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './code-block.component.html',
+  styleUrl: './code-block.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeBlockComponent {

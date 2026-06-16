@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.roadmap-card {
+  @apply rounded-xl border border-border-soft bg-bg-soft/65 p-4;
+}
+
+.roadmap-card__header {
+  @apply flex items-center justify-between gap-2;
+}
+
+.roadmap-card__title {
+  @apply text-base font-medium;
+}
+
+.roadmap-card__section {
+  @apply mt-3 text-sm leading-relaxed text-text-muted;
+}
+
+.roadmap-card__label {
+  @apply font-semibold text-text-main;
+}

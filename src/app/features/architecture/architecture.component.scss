@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.architecture-card {
+  @apply rounded-xl border border-border-soft bg-bg-soft/65 p-4;
+}
+
+.architecture-card__title {
+  @apply text-sm font-semibold;
+}
+
+.architecture-card__copy {
+  @apply mt-2 text-sm text-text-muted;
+}

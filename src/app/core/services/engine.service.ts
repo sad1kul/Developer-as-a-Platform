@@ -17,6 +17,18 @@ export class EngineService {
   readonly engineError = signal('');
 
   readonly activeEngineContext = computed<EngineContext>(() => ENGINE_CONTEXTS[this.activeFramework()]);
+  readonly activeEngineHex = computed(() => {
+    switch (this.activeFramework()) {
+      case 'Angular':
+        return '#10B981';
+      case 'React':
+        return '#0EA5E9';
+      case 'Svelte':
+        return '#FF3E00';
+      default:
+        return '#10B981';
+    }
+  });
 
   private hostElement?: HTMLElement;
 

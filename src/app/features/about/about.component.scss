@@ -1,0 +1,7 @@
+:host {
+  display: block;
+}
+
+.about-copy {
+  @apply mt-4 text-sm leading-relaxed text-text-muted sm:text-base;
+}
