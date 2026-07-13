@@ -309,30 +309,30 @@ export const CASE_STUDIES: CaseStudy[] = [
     sourceUrl: SOURCE_LINKS.angularWorkbench
   },
   {
-    id: 'fintech-transaction-support-workflow',
-    title: 'Fintech Support Queue',
-    framing: 'Support Operations',
-    problem: 'Manual transaction dispute reviews are slow, repetitive, and error-prone for support teams.',
-    role: 'UI/UX Developer',
-    tech: ['Angular', 'Forms', 'Status Models'],
-    challenge: 'Simplifying complex financial data into actionable, skimmable support tickets.',
-    solution: 'Modeled a status-driven queue with rapid filtering and guided dispute resolution actions.',
-    outcome: 'Shows a practical queue model for triage, ownership, and escalation in regulated support contexts.',
-    sourceLabel: 'View data model',
-    sourceUrl: SOURCE_LINKS.dataModels
+    id: 'browser-bridge',
+    title: 'Browser Bridge',
+    framing: 'Developer Tooling',
+    problem: 'AI coding assistants debug blind — no console output, no failed requests, no page state. You end up copy-pasting errors manually into the chat.',
+    role: 'Builder & Publisher',
+    tech: ['VS Code Extension API', 'Python FastAPI', 'WebSockets', 'Browser Extension API', 'MCP', 'Shell Scripting'],
+    challenge: 'Getting live browser signals into the IDE without tripping browser security boundaries, and making the setup actually work across macOS, Windows, and Linux without a painful install process.',
+    solution: 'Built two connected pieces: IDEextension runs a local FastAPI server inside VS Code and surfaces IDE commands; IDEconnector is the Chrome/Brave extension that connects the active tab over WebSocket and forwards console errors, rejections, and page context. A separate MCP server exposes the same data as structured tool calls for AI agents.',
+    outcome: 'Published on Open VSX. Gives developers and AI agents real-time browser visibility — console output, tab context, and remote commands (click, type, scroll, navigate, eval) — without leaving the editor.',
+    sourceLabel: 'View on Open VSX',
+    sourceUrl: 'https://open-vsx.org/extension/sad1kul/browser-bridge'
   },
   {
-    id: 'ai-browser-debug-bridge',
-    title: 'Runtime Debug Bridge',
-    framing: 'Developer Tooling',
-    problem: 'Coding assistants often lack live browser context such as DOM state, console errors, and network activity.',
-    role: 'Concept Designer',
-    tech: ['WebSockets', 'Browser Extensions', 'Agent Tooling'],
-    challenge: 'Securely capturing and streaming runtime browser signals to local AI agents.',
-    solution: 'Designed a browser-to-editor concept for sharing runtime signals with local development tools.',
-    outcome: 'Defines a credible roadmap for faster diagnosis across frontend debugging and API integration issues.',
-    sourceLabel: 'View technical notes',
-    sourceUrl: SOURCE_LINKS.caseStudies
+    id: 'angular-viewer-libraries',
+    title: 'Angular Viewer Libraries',
+    framing: 'Open Source Engineering',
+    problem: 'Both ngx-imageviewer and ng2-pdf-viewer had dropped Angular 17 support. Teams depending on them were either stuck on older Angular versions or maintaining their own forks quietly.',
+    role: 'Open Source Maintainer',
+    tech: ['Angular 17', 'TypeScript', 'ng-packagr', 'Canvas API', 'PDF.js', 'npm Publishing'],
+    challenge: 'Updating peer deps and build config to target Angular 17 without breaking the existing component API — both libraries have a lot of inputs and outputs that downstream consumers rely on.',
+    solution: 'Forked, updated, and published both as scoped npm packages: @sad1kul/ngx-imageviewer (canvas-based, rotate/zoom/pan, JPEG/PNG/GIF/PDF) and @sad1kul/ng2-pdf-viewer (full PDF viewer with rich input/output API). Both ship as proper ng-packagr library builds.',
+    outcome: 'Both packages are live on npm. Teams using Angular 17 can drop them in without touching their own build pipeline or maintaining a private fork.',
+    sourceLabel: 'View on npm',
+    sourceUrl: 'https://www.npmjs.com/package/@sad1kul/ngx-imageviewer'
   }
 ];
 
@@ -362,12 +362,12 @@ export const SYSTEMS_IN_PROGRESS: SystemProgressItem[] = [
       'Prototype an internal signal board that combines product behavior indicators with support trends for earlier intervention.'
   },
   {
-    title: 'AI Browser Debug Bridge',
-    status: 'Planned',
+    title: 'Browser Bridge — Agent Layer',
+    status: 'Building',
     businessProblem:
-      'Coding assistants often lack browser runtime context during debugging.',
+      'The core browser-IDE bridge works, but AI agents need more than raw console output — structured DOM queries, accessibility snapshots, and multi-tab awareness are missing.',
     plannedDirection:
-      'Explore browser-side data collection and local bridging patterns that can provide runtime context to coding assistants.'
+      'Extend the MCP server with structured DOM and accessibility queries, add Firefox alongside Chromium, and tighten up automation reliability for multi-step debugging workflows.'
   }
 ];
 
