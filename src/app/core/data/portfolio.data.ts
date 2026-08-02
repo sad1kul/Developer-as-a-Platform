@@ -43,6 +43,7 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'tech-profile', label: 'Technical Profile', icon: 'tech' },
   { id: 'architecture', label: 'Architecture', icon: 'architecture' },
   { id: 'case-studies', label: 'Case Studies', icon: 'case-studies' },
+  { id: 'research', label: 'Research', icon: 'research' },
   { id: 'systems', label: 'Product Roadmap', icon: 'systems' },
   { id: 'about', label: 'About', icon: 'about' },
   { id: 'contact', label: 'Contact', icon: 'contact' }

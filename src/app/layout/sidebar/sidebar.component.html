@@ -20,17 +20,31 @@
       <ul class="sidebar__nav-list">
         @for (item of navItems; track item.id) {
           <li>
-            <a
-              [href]="'#' + item.id"
-              class="sidebar__nav-link"
-              [class.is-active]="item.id === activeSection"
-              (click)="sectionSelected.emit(item.id)"
-            >
-              <svg viewBox="0 0 24 24" class="sidebar__nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path [attr.d]="navPath(item.icon)"></path>
-              </svg>
-              <span>{{ item.label }}</span>
-            </a>
+            @if (item.id === 'research') {
+              <a
+                href="https://research.sadikul.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="sidebar__nav-link border border-emerald/30 bg-emerald/10 text-emerald font-semibold hover:bg-emerald/20 transition-colors"
+              >
+                <svg viewBox="0 0 24 24" class="sidebar__nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path [attr.d]="navPath(item.icon)"></path>
+                </svg>
+                <span>{{ item.label }}</span>
+              </a>
+            } @else {
+              <a
+                [href]="'#' + item.id"
+                class="sidebar__nav-link"
+                [class.is-active]="item.id === activeSection"
+                (click)="sectionSelected.emit(item.id)"
+              >
+                <svg viewBox="0 0 24 24" class="sidebar__nav-icon" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path [attr.d]="navPath(item.icon)"></path>
+                </svg>
+                <span>{{ item.label }}</span>
+              </a>
+            }
           </li>
         }
       </ul>
