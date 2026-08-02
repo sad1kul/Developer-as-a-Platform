@@ -7,6 +7,7 @@ export function navIconPath(icon: NavIcon): string {
     tech: 'M4 7h16M4 12h8M4 17h12M15 12h5M19 17h1',
     architecture: 'M12 3v6m0 0 5 3m-5-3-5 3m5 3v6m0-6 5-3m-5 3-5-3',
     'case-studies': 'M4 6h16v12H4zM8 10h8M8 14h5',
+    research: 'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM14 17H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z',
     systems: 'M4 12h5l2 6 3-12 2 6h4',
     about: 'M12 13a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-7 8a7 7 0 0 1 14 0',
     contact: 'M4 7h16v10H4zm0 0 8 6 8-6'

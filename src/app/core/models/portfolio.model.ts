@@ -4,6 +4,7 @@ export type NavSectionId =
   | 'tech-profile'
   | 'architecture'
   | 'case-studies'
+  | 'research'
   | 'systems'
   | 'about'
   | 'contact';
@@ -14,6 +15,7 @@ export type NavIcon =
   | 'tech'
   | 'architecture'
   | 'case-studies'
+  | 'research'
   | 'systems'
   | 'about'
   | 'contact';
